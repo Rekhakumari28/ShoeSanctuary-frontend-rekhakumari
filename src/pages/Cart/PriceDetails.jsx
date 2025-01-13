@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { Link } from "react-router-dom";
-import ListOfAddressComponent from "../Address/ListOfAddressComponent";
+
 import AddressComponent from "../Address/AddAddressComponent";
 
 const PriceDetails = ({ orderItems, address, user }) => {
   const [selectedAddress, setSelectedAddress] = useState();
   const [orderPlaced, setOrderPlaced] = useState(false);
+
+console.log(address)
 
   const orderAmount =
     orderItems.length > 0 &&
@@ -129,7 +131,7 @@ const PriceDetails = ({ orderItems, address, user }) => {
                 <div className='card'>
                   <div className='card-body'>
                       <input type="radio" name="address" value={selectedAddress} onChange={()=>setSelectedAddress(address)}/>{" "}
-                   {address.name},  {address.street}, {address.state}, {address.country}, {address.zipcode},  {address.mobileNo} <br/>
+                      {address.address}, {address.city}, {address.postalCode},  {address.country} <br/>
                     <button className='btn btn-danger float-end btn-sm' onClick={()=>handleRemove(address._id)}>Remove</button>
                   </div>
                 </div>
