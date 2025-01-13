@@ -62,9 +62,7 @@ const AddressComponent = () => {
               value={formData.address}
               onChange={handleAddAddress}
             />
-          </div>
-          <div className="input-group py-2">
-            <label className="input-group-text">City: </label>
+             <label className="input-group-text">City: </label>
             <input
               className="form-control"
               type="text"
@@ -73,6 +71,9 @@ const AddressComponent = () => {
               value={formData.city}
               onChange={handleAddAddress}
             />
+          </div>
+          <div className="input-group py-2">
+           
 
             <label className="input-group-text">Postal Code: </label>
             <input
@@ -93,12 +94,11 @@ const AddressComponent = () => {
               value={formData.country}
               onChange={handleAddAddress}
             />
-          </div>
-          <div className="input-group py-2">
-            <button className="btn btn-primary " type="submit">
+              <button className="btn btn-primary " type="submit">
               Add Address
             </button>
           </div>
+         
         </form>
         <Toaster position="top-center" reverseOrder={false} />
       </div>

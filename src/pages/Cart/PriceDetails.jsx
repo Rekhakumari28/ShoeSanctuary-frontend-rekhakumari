@@ -89,7 +89,7 @@ console.log(address)
   return (
     <div className="card bg-body-tertiary border-0">
       {orderPlaced && <Link to="/products">Continue Shopping</Link>}
-      {orderItems.length > 0 && (
+      {orderItems && orderItems.length > 0 && (
         <div className="card-body d-grid">
           <h4>Price Details</h4>
           <hr />
@@ -126,20 +126,23 @@ console.log(address)
           <h4>Select address</h4>
 
           <div className="row">
-            {address && address.length > 0 ? (
-              <div className='col-md-12 py-2' key={address._id}>
-                <div className='card'>
+              <div className='col-md-12 py-2 mb-2' >
+            {address && address.length > 0 && address.map(address=>(
+                <div className='card' key={address._id}>
                   <div className='card-body'>
                       <input type="radio" name="address" value={selectedAddress} onChange={()=>setSelectedAddress(address)}/>{" "}
                       {address.address}, {address.city}, {address.postalCode},  {address.country} <br/>
                     <button className='btn btn-danger float-end btn-sm' onClick={()=>handleRemove(address._id)}>Remove</button>
                   </div>
                 </div>
-
-              </div>              
-            ) : (
-              <AddressComponent />
-            )}
+               
+              ) ) }
+              </div> 
+              <hr />
+              <div className="my-2">
+                <h5>Add New Address</h5>
+               <AddressComponent />   
+               </div>          
           </div>
           {!selectedAddress ? (
             ""

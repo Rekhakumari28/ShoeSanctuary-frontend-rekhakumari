@@ -1,12 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useGetWishlist, useGetOrderItems } from "./FatchingData";
+import {
+  useGetWishlist,
+  useGetOrderItems,
+  useGetUserByEmail,
+} from "./FatchingData";
 const Header = () => {
   const { wishlist } = useGetWishlist();
   const wishlistCounter = wishlist.length > 0 ? wishlist.length : "";
-
+  const { user } = useGetUserByEmail(
+    "rekha.kumari1928@gmail.com"
+  );
   const { orderItems } = useGetOrderItems();
-  const orderItemsCounter = orderItems.length > 0 ? orderItems.length : "";
+  const orderItemsCounter = orderItems && orderItems.length > 0 ? orderItems.length : "";
   return (
     <div>
       <header>
@@ -75,14 +81,14 @@ const Header = () => {
                     </Link>
                     <ul className="dropdown-menu ">
                       <li>
-                        <strong className="mx-2">Hello</strong>
+                        <strong className="mx-2">Hello, {user && user}</strong>
                       </li>
                       <li>
                         <hr className="dropdown-divider" />
                       </li>
                       <li>
                         {" "}
-                        <Link to="/login" className="nav-link ">
+                        <Link to="/auth" className="nav-link ">
                           Login
                         </Link>
                       </li>
@@ -133,7 +139,6 @@ const Header = () => {
                       <span className="position-absolute top-25 start-100 translate-middle badge border border-light bg-danger p-1">
                         {orderItemsCounter}
                       </span>
-                     
                     </Link>
                   </li>
                 </ul>

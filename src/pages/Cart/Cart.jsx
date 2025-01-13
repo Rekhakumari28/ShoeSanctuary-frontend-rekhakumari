@@ -6,6 +6,7 @@ import PriceDetails from "./PriceDetails";
 
 const Cart = ({
   orderItems,
+  products,
   loadingOrderItems,
   errorOrderItems,
   address,
@@ -23,10 +24,10 @@ const Cart = ({
           </p>
         ) : (
           <div className="row">
-            {orderItems.length > 0 ? (
+            {orderItems && orderItems.length > 0 ? (
               <>
                 <div className="col-md-6">
-                  <RenderCartProduct orderItems={orderItems} />
+                  <RenderCartProduct orderItems={orderItems}  products={products}/>
                 </div>
                 <div className="col-md-6 mt-2">
                   <PriceDetails

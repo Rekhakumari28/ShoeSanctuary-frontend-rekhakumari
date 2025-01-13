@@ -4,10 +4,12 @@ import Footer from "../../components/Footer";
 import { useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-const Products = ({ products, loadingProducts, errorProducts }) => {
+
+const Products = ({ products, loadingProducts, errorProducts}) => {
   const [filterByCategory, setFilterByCategory] = useState([]);
   const [filterByRating, setFilterByRating] = useState(0);
   const [filterByPrice, setFilterByPrice] = useState("");
+  const [ wishlistAddRemove, setWishlistAddRemove] = useState()
 
   const ref = useRef([]);
   const refPrice1 = useRef([null]);
@@ -102,6 +104,29 @@ const Products = ({ products, loadingProducts, errorProducts }) => {
     }
   };
 
+  //remove product from cart
+
+  const removeProductFromCart = async (product) => {
+    const productId = product._id
+    try {
+      const response = await fetch(
+        `https://backend-shoesanctuary-major-project.vercel.app/api/wishlists/${productId}`,
+        { method: "DELETE" }
+      );
+      if (!response.ok) {
+        throw "Failed to remove product from wishlist.";
+      }
+      const data = await response.json();
+      if (data) {
+       
+        toast.success("Product removed from wishlist Successfully.");
+      }
+    } catch (error) {
+      toast.error("An error occured while fetching wishlist products.", error);
+    }
+    
+  };
+
   //add to cart
   const handleAddToCart = async (object) => {
     const value = object;
@@ -129,7 +154,7 @@ const Products = ({ products, loadingProducts, errorProducts }) => {
   };
 
   const handleDisable = (event)=>{
-    event.target.disabled = true;
+    event.target.disabled = true
   }
 
   return (
@@ -282,15 +307,16 @@ const Products = ({ products, loadingProducts, errorProducts }) => {
                             <div className="row">
                               {" "}
                               <div className="col-auto bg-light rounded-circle  ">
-                                <Link
-                                  onClick={() =>{ handleAddToWishlist(product); handleDisable(event) }}
+                               
+                                <Link 
+                                  onClick={() =>{ handleAddToWishlist(product)  }}
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="16"
                                     height="16"
                                     fill="currentColor"
-                                    className="bi bi-heart"
+                                    className={`bi bi-heart ? bi bi-heart : bi bi-heart-fill`}
                                     viewBox="0 0 16 16"
                                   >
                                     <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15" />

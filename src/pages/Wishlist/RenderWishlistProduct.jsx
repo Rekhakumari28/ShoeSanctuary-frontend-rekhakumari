@@ -1,7 +1,7 @@
 import React from "react";
 import toast, { Toaster } from "react-hot-toast";
 
-const RenderWishlistProduct = ({wishlist}) => { 
+const RenderWishlistProduct = ({ wishlist }) => {
   //remove from cart
   const handleRemove = async (productId) => {
     try {
@@ -21,10 +21,10 @@ const RenderWishlistProduct = ({wishlist}) => {
     }
   };
 
-   //add to cart
-   const handleAddToCart = async (object) => {
+  //add to cart
+  const handleAddToCart = async (object) => {
     const value = object;
-    const productId = object._id
+    const productId = object._id;
     try {
       const response = await fetch(
         `https://backend-shoesanctuary-major-project.vercel.app/api/orderItems`,
@@ -38,13 +38,11 @@ const RenderWishlistProduct = ({wishlist}) => {
       );
       if (!response.ok) {
         throw "Failed to add product to cart.";
-        
       }
-        const data = await response.json();
-        console.log(data)
-          toast.success("Product is Moved to cart")
-          handleRemove(productId)
-                 
+      const data = await response.json();
+      console.log(data);
+      toast.success("Product is Moved to cart");
+      handleRemove(productId);
     } catch (error) {
       toast.error("An error occured while fetching wishlist products. ", error);
     }
@@ -52,17 +50,19 @@ const RenderWishlistProduct = ({wishlist}) => {
 
   return (
     <div className="list-group ">
-      {wishlist && wishlist.length > 0 && (
+      {wishlist &&
+        wishlist.length > 0 &&
         wishlist?.map((product) => (
           <div className="list-group-item" key={product._id}>
             <div className="row">
               <div className="col-md-4 ">
                 <div style={{ height: "180px", width: "150px" }}>
-                <img
-                  className="img-fluid"
-                  src={product.product.images}
-                  alt={product.product.title}
-                /></div>
+                  <img
+                    className="img-fluid"
+                    src={product.product.images}
+                    alt={product.product.title}
+                  />
+                </div>
               </div>
               <div className="col-md-7">
                 <h5>{product.product.title}</h5>
@@ -81,12 +81,12 @@ const RenderWishlistProduct = ({wishlist}) => {
                 >
                   Remove{" "}
                 </button>
+               
               </div>
             </div>
           </div>
-        ))
-      ) }
-      <Toaster position="top-center" reverseOrder={false} /> 
+        ))}
+      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 };

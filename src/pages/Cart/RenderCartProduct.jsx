@@ -1,7 +1,7 @@
 import React from "react";
 import toast, { Toaster } from "react-hot-toast";
 
-const RenderCartProduct = ({orderItems}) => {
+const RenderCartProduct = ({orderItems, products}) => {
  
   //add Quantity
   const addQuantity = async (productId, product) => {
@@ -96,7 +96,8 @@ const RenderCartProduct = ({orderItems}) => {
   }
 
   const handleMoveToWishlist = async (object) =>{
-    const value = object
+    const value = object.product
+    
     const productId = object._id
     try {
    const response = await fetch(
@@ -126,7 +127,7 @@ const RenderCartProduct = ({orderItems}) => {
 
     return (
       <div className="">
-        {orderItems.length > 0 && orderItems?.map((product) => (
+        {orderItems && orderItems.length > 0 && orderItems?.map((product) => (
           <div
             className="card bg-body-tertiary shadow p-3 my-3 border-0"
             key={product._id}

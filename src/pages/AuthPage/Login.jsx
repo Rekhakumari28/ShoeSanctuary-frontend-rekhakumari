@@ -2,17 +2,15 @@ import React, { useState } from "react";
 
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import useFetch from "../../useFetch";
-
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setphone] = useState("");
-   
+
   const handleUserLoginForm = async (event) => {
-    event.preventDefault();   
+    event.preventDefault();
     try {
       const response = await fetch(
         "https://backend-shoesanctuary-major-project.vercel.app/api/users",
@@ -35,22 +33,21 @@ const Login = () => {
       const data = await response.json();
       console.log("user added", data);
       setUserLogin(true);
-      setUsername("")
-      setEmail("")
-      setPassword("")
-      setphone("")
+      setUsername("");
+      setEmail("");
+      setPassword("");
+      setphone("");
     } catch (error) {
       console.log("Error: ", error);
     }
   };
-  
 
   return (
     <div>
       <Header />
       <div className="container py-2">
         <h2>User Login</h2>
-       <form onSubmit={handleUserLoginForm}>
+        <form onSubmit={handleUserLoginForm}>
           <div className="form-floating mb-3  ">
             <input
               type="text"
@@ -100,8 +97,7 @@ const Login = () => {
               Login
             </button>
           </div>
-        </form>  
-            
+        </form>
       </div>
       <Footer />
     </div>
