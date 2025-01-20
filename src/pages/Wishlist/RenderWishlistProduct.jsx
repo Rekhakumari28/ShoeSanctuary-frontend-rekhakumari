@@ -1,26 +1,28 @@
 import React from "react";
 import toast, { Toaster } from "react-hot-toast";
 
-const RenderWishlistProduct = ({ wishlist }) => {
-  //remove from cart
-  const handleRemove = async (productId) => {
-    try {
-      const response = await fetch(
-        `https://backend-shoesanctuary-major-project.vercel.app/api/wishlists/${productId}`,
-        { method: "DELETE" }
-      );
-      if (!response.ok) {
-        throw "Failed to remove product from wishlist.";
-      }
-      const data = await response.json();
-      if (data) {
-        toast.success("Product removed from wishlist Successfully.");
-      }
-    } catch (error) {
-      toast.error("An error occured while fetching wishlist products.", error);
+ //remove from cart
+const handleRemove = async (productId) => {
+  try {
+    const response = await fetch(
+      `https://backend-shoesanctuary-major-project.vercel.app/api/wishlists/${productId}`,
+      { method: "DELETE" }
+    );
+    if (!response.ok) {
+      throw "Failed to remove product from wishlist.";
     }
-  };
+    const data = await response.json();
+    if (data) {
+      toast.success("Product removed from wishlist Successfully.");
+    }
+  } catch (error) {
+    toast.error("An error occured while fetching wishlist products.", error);
+  }
+};
 
+
+const RenderWishlistProduct = ({ wishlist }) => { 
+ 
   //add to cart
   const handleAddToCart = async (object) => {
     const value = object;

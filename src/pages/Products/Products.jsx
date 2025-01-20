@@ -4,12 +4,13 @@ import Footer from "../../components/Footer";
 import { useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import ProductCard from "./ProductCard";
 
-const Products = ({ products, loadingProducts, errorProducts}) => {
+const Products = ({ products, loadingProducts, errorProducts }) => {
   const [filterByCategory, setFilterByCategory] = useState([]);
   const [filterByRating, setFilterByRating] = useState(0);
   const [filterByPrice, setFilterByPrice] = useState("");
-  const [ wishlistAddRemove, setWishlistAddRemove] = useState()
+  const [searchProduct, setSearchProduct] = useState("");
 
   const ref = useRef([]);
   const refPrice1 = useRef([null]);
@@ -77,89 +78,22 @@ const Products = ({ products, loadingProducts, errorProducts}) => {
     refPrice2.current.checked = false;
   };
 
-  //add to wishlist
-  const handleAddToWishlist = async (object) => {
-    const value = object;
-    try {
-      const response = await fetch(
-        `https://backend-shoesanctuary-major-project.vercel.app/api/wishlists`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ product: value }),
-        }
-      );
-      if (!response.ok) {
-        throw "Failed to add product.";
-      }
-      const data = await response.json();
-      if (data) {
-        console.log(data);
-        toast.success("Product is added to the wishlist.");
-      }
-    } catch (error) {
-      toast.error("Error: ", error);
-    }
-  };
-
-  //remove product from cart
-
-  const removeProductFromCart = async (product) => {
-    const productId = product._id
-    try {
-      const response = await fetch(
-        `https://backend-shoesanctuary-major-project.vercel.app/api/wishlists/${productId}`,
-        { method: "DELETE" }
-      );
-      if (!response.ok) {
-        throw "Failed to remove product from wishlist.";
-      }
-      const data = await response.json();
-      if (data) {
-       
-        toast.success("Product removed from wishlist Successfully.");
-      }
-    } catch (error) {
-      toast.error("An error occured while fetching wishlist products.", error);
-    }
-    
-  };
-
-  //add to cart
-  const handleAddToCart = async (object) => {
-    const value = object;
-    try {
-      const response = await fetch(
-        `https://backend-shoesanctuary-major-project.vercel.app/api/orderItems`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ product: value }),
-        }
-      );
-      if (!response.ok) {
-        throw "Failed to add product to cart.";
-      }
-      const data = await response.json();
-      if(data){
-        toast.success("Product is added to the cart");
-      }     
-    } catch (error) {
-      toast.error("Error: ", error);
-    }
-  };
-
-  const handleDisable = (event)=>{
-    event.target.disabled = true
-  }
+  const handleSearchProductFromNavbar =
+    searchProduct === ""
+      ? categoryFromHomePage
+      : categoryFromHomePage?.filter((product) => {
+        const categoryMatch = product.category.category.toLowerCase().includes(searchProduct)
+        const productMatch = product.title.toLowerCase().includes(searchProduct)
+        return categoryMatch || productMatch
+        
+      });
 
   return (
     <div>
-      <Header />
+      <Header
+        value={searchProduct}
+        searchProducts={(event) => setSearchProduct(event.target.value)}
+      />
       <div className="row">
         <div className="col-md-2 bg-body-tertiary">
           {/* categoryFilter */}
@@ -287,70 +221,12 @@ const Products = ({ products, loadingProducts, errorProducts}) => {
                 {errorProducts}
               </p>
             ) : (
-              categoryFromHomePage?.map((product) => (
-                <div className="col-md-3 my-2 p-2" key={product._id}>
-                  <div key={product._id}>
-                    <div
-                      style={{ height: "260px", width: "230px" }}
-                      className="card bg-white border border-0 shadow mt-3"
-                    >
-                      {" "}
-                      <div className="text-center ">
-                        <Link to={`/productDetails/${product._id}`}>
-                          <img
-                            style={{ height: "150px", width: "150px" }}
-                            className="img-fluid rounded  mt-1"
-                            src={product.images}
-                            alt={product.title}
-                          />
-                          <div className="card-img-overlay ">
-                            <div className="row">
-                              {" "}
-                              <div className="col-auto bg-light rounded-circle  ">
-                               
-                                <Link 
-                                  onClick={() =>{ handleAddToWishlist(product)  }}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="16"
-                                    height="16"
-                                    fill="currentColor"
-                                    className={`bi bi-heart ? bi bi-heart : bi bi-heart-fill`}
-                                    viewBox="0 0 16 16"
-                                  >
-                                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15" />
-                                  </svg>
-                                </Link>
-                              </div>                             
-                            </div>
-                          </div>
-                        </Link>
-                      </div>
-                      <div className="card-body">
-                        <span>
-                          {" "}
-                          <strong>{product.title.substring(0, 25)}</strong>{" "}
-                        </span>
-                        <br />
-                        <span>
-                          <strong>Price:</strong> ${product.price}
-                        </span>
-                        <br />
-                      </div>
-                    </div>
-                    <div className="d-grid gap-2" style={{ width: "230px" }}>
-                      <button
-                        className="btn btn-primary"
-                        onClick={() => {handleAddToCart(product); handleDisable(event)}}
-                      >
-                        Add to Cart
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
+              handleSearchProductFromNavbar?.map((product) => 
+                
+              <ProductCard key={product._id} product={product}/>
+             
+
+            ))}
           </div>
         </div>
       </div>
