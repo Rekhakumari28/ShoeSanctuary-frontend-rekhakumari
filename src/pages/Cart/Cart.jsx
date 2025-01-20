@@ -11,8 +11,9 @@ const Cart = ({
   errorOrderItems,
   address,
   user,
+  cart
 }) => {
-  console.log(orderItems);
+
   return (
     <div>
       <Header />
@@ -34,6 +35,7 @@ const Cart = ({
                     orderItems={orderItems}
                     address={address}
                     user={user}
+                    cart={cart}
                   />
                 </div>
               </>

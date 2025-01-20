@@ -84,3 +84,20 @@ export const useGetOrderItems = ()=>{
   },[])
   return { orderItems , loadingOrderItems, errorOrderItems }
 } 
+
+export const useGetCart = ()=>{
+  const [cart, setCart] = useState([]);
+  const [loadingCart, setLoadingCart] = useState(false);
+  const [errorCart, setErrorCart] = useState(null);
+ useEffect(()=>{
+  setLoadingCart(true);
+    fetch("https://backend-shoesanctuary-major-project.vercel.app/api/carts")
+    .then((res) => res.json())
+    .then((data) => {
+      setCart(data)       
+    })
+    .catch((error) => setErrorCart(error.message))
+    .finally(() => setLoadingCart(false));
+  },[])
+  return { cart , loadingCart, errorCart }
+} 

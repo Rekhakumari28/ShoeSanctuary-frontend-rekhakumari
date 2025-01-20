@@ -30,7 +30,7 @@ const RenderWishlistProduct = ({ wishlist }) => {
  
   //add to cart
   const handleAddToCart = async (object) => {
-    const value = object;
+    const value = object.product._id;
     const productId = object._id;
     try {
       const response = await fetch(

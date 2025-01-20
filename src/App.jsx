@@ -12,7 +12,9 @@ import {
   useGetAddress,
   useGetUserByEmail,
   useGetOrderItems,
+  useGetCart
 } from "./components/FatchingData";
+import Checkout from "./pages/Checkout/Checkout";
 
 function App() {
   const { wishlist, loadingWishlist, errorWishlist } = useGetWishlist();
@@ -22,7 +24,7 @@ function App() {
     "rekha.kumari1928@gmail.com"
   );
   const { orderItems, loadingOrderItems, errorOrderItems } = useGetOrderItems();
-
+const {cart , loadingCart, errorCart} = useGetCart()
   return (
     <>
       <Routes>
@@ -58,6 +60,8 @@ function App() {
               errorOrderItems={errorOrderItems}
               address={address}
               user={user}
+              cart= {cart}
+              
             />
           }
         />
@@ -97,7 +101,7 @@ function App() {
             <Auth user={user} loadingUser={loadingUser} errorUser={errorUser} />
           }
         />
-        {/* <Route path="/usersProfile"  element={<UsersProfile/>} /> */}
+        <Route path="/checkout"  element={<Checkout/>} />
       </Routes>
     </>
   );

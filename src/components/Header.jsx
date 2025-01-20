@@ -98,12 +98,7 @@ const Header = (props) => {
                           Address
                         </Link>
                       </li>
-                      <li>
-                        {" "}
-                        <Link to="/checkout" className="nav-link ">
-                          Checkout
-                        </Link>
-                      </li>
+                     
                     </ul>
                   </li>
 

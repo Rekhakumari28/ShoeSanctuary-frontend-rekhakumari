@@ -7,7 +7,7 @@ const Auth = () => {
   return (
     <div>
       <Header/>
-      <Register />
+      {/* <Register /> */}
       <Login />
       <Footer/>
     </div>

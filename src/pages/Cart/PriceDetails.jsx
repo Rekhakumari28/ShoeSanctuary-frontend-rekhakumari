@@ -1,14 +1,68 @@
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 import AddressComponent from "../Address/AddAddressComponent";
 
-const PriceDetails = ({ orderItems, address, user }) => {
+
+const handleRemoveCart = async (cartId) =>{
+  try {
+    const response = await fetch(
+      `https://backend-shoesanctuary-major-project.vercel.app/api/carts/${cartId}`,
+      { method: "DELETE" }
+    );
+    if (!response.ok) {
+      throw "Failed to remove cart.";
+    }
+    const data = await response.json();
+    if (data) {
+      toast.success("Item removed Successfully.");
+      window.location.reload()
+    }
+  } catch (error) {
+    toast.error("An error occured while removing item from cart.");
+  }
+}
+
+const handleRemoveOrderItems = async(orderItemId) =>{
+  try {
+    const response = await fetch(
+      `https://backend-shoesanctuary-major-project.vercel.app/api/orderItems/${orderItemId}`,
+      { method: "DELETE" }
+    );
+    if(!response.ok){
+      throw "Failed to delete product from cart."
+    }
+    const data = response.json()
+    console.log("Product deleted:", data)
+    toast.success("Product Removed from Cart.")
+  } catch (error) {
+    toast.error("Error: ", error)
+  }
+}
+
+const handleRemoveAddress = async (addressId) =>{
+  try {
+    const response = await fetch(`https://backend-shoesanctuary-major-project.vercel.app/api/addresses/${addressId}`,
+     { method: "DELETE"},
+  );
+  
+    if(!response.ok){
+      throw "Failed to delete Address."
+    }
+    const data = await response.json()
+    if(data){
+      setSuccessMessage("Address deleted Successfully.")
+      console.log("Address deleted Successfully.", data)
+    }
+  } catch (error) {
+    console.log("Error: ", error)
+  }
+}
+
+const PriceDetails = ({ orderItems, address, user, cart }) => {
   const [selectedAddress, setSelectedAddress] = useState();
   const [orderPlaced, setOrderPlaced] = useState(false);
-
-console.log(address)
+const navigate = useNavigate()
 
   const orderAmount =
     orderItems.length > 0 &&
@@ -34,12 +88,13 @@ console.log(address)
   const afterDiscountTotalAmount = orderAmount - totalOrderDiscount;
   const totalSavedAmount = totalOrderDiscount + deliveryCharges;
 
-  const handlePlaceOrder = async (data) => {
-    const orderItems = data?.map((object) => object._id);
+const cartId = cart?.length > 0 && cart[cart?.length-1]._id 
+console.log(cartId)
 
+  const handlePlaceOrder = async (data) => {
+    const orderItem = data?.map((object) => object._id);
     const selectedAddressId = selectedAddress._id;
     const userId = user._id;
-
     try {
       const response = await fetch(
         "https://backend-shoesanctuary-major-project.vercel.app/api/carts",
@@ -49,7 +104,7 @@ console.log(address)
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            orderItem: orderItems,
+            orderItem: orderItem,
             shippingAddress: selectedAddressId,
             status: "Pending",
             totalPrice: afterDiscountTotalAmount,
@@ -57,34 +112,24 @@ console.log(address)
           }),
         }
       );
-      console.log(response);
+      
       if (!response.ok) {
         throw "Failed to add product.";
       }
       const data = await response.json();
       if (data) {
         setOrderPlaced(true);
-        toast.custom((t) => (
-          <div
-            className={`${
-              t.visible ? "animate-enter" : "animate-leave"
-            } bg-success-subtle text-success-emphasis rounded p-3`}
-          >
-            <span>Order Placed Successfully!</span>{" "}
-            <button
-              onClick={() => toast.dismiss(t.id)}
-              className="btn btn-outline-success"
-            >
-              Close
-            </button>{" "}
-          </div>
-        ));
-        console.log("Order Placed", data);
+         console.log("Order Placed", data);
+         toast.success("Order Placed Successfully.")
+         handleRemoveCart(cartId) 
+                       
       }
     } catch (error) {
       console.log("Error: ", error);
+      toast.error("An error occured while placing order.")
     }
   };
+
 
   return (
     <div className="card bg-body-tertiary border-0">
@@ -132,7 +177,7 @@ console.log(address)
                   <div className='card-body'>
                       <input type="radio" name="address" value={selectedAddress} onChange={()=>setSelectedAddress(address)}/>{" "}
                       {address.address}, {address.city}, {address.postalCode},  {address.country} <br/>
-                    <button className='btn btn-danger float-end btn-sm' onClick={()=>handleRemove(address._id)}>Remove</button>
+                    <button className='btn btn-danger float-end btn-sm' onClick={()=>handleRemoveAddress(address._id)}>Remove</button>
                   </div>
                 </div>
                
@@ -149,7 +194,9 @@ console.log(address)
           ) : (
             <button
               className="btn btn-primary"
-              onClick={() => handlePlaceOrder(orderItems)}
+              onClick={() => {handlePlaceOrder(orderItems);
+                  ;orderItems?.map(order=>handleRemoveOrderItems (order._id))  ; navigate("/checkout") 
+                }}
             >
               Checkout
             </button>
