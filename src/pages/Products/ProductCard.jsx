@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import Heart from "react-heart";
 import { useParams, Link } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-import { useGetWishlist } from "../../components/FatchingData";
 
-const ProductCard = ({ product }) => {
-  const [active, setActive] = useState(false);
+const ProductCard = ({ product, wishlist }) => {
+  const [active, setActive] = useState(false);  
   const { images, title, rating, price } = product;
- 
+
+  const wishlistProductId =wishlist[wishlist?.length - 1]
+  console.log(wishlistProductId)
+
   //add to wishlist
   const handleAddToWishlist = async (object) => {
     const value = object;
@@ -29,22 +31,19 @@ const ProductCard = ({ product }) => {
       if (data) {
         console.log(data);
         toast.success("Product is added to the wishlist.");
+       
       }
     } catch (error) {
-      toast.error("Error: ", error);
+      toast.error("Error occured while adding product to wishlist. ");
     }
   };
 
   //remove product from cart
-
-  const removeProductFromCart = async (product) => {  
-    const productId = product._id  
-    const { wishlist } = useGetWishlist();
-    const findProductInWishlist = [...wishlist]?.find(product=> product._id == productId)
-
+  const removeProductFromCart = async (productId) => {
+   
     try {
       const response = await fetch(
-        `https://backend-shoesanctuary-major-project.vercel.app/api/wishlists/${findProductInWishlist}`,
+        `https://backend-shoesanctuary-major-project.vercel.app/api/wishlists/${productId}`,
         { method: "DELETE" }
       );
       if (!response.ok) {
@@ -52,6 +51,7 @@ const ProductCard = ({ product }) => {
       }
       const data = await response.json();
       if (data) {
+        
         toast.success("Product removed from wishlist Successfully.");
       }
     } catch (error) {
@@ -79,7 +79,7 @@ const ProductCard = ({ product }) => {
       const data = await response.json();
       if (data) {
         toast.success("Product is added to the cart");
-      }
+      }      
     } catch (error) {
       toast.error("Error: ", error);
     }
@@ -104,24 +104,22 @@ const ProductCard = ({ product }) => {
               src={images}
               alt={title}
             />
-            {/* <div className="card-img-overlay ">
+            <div className="card-img-overlay ">
               <div className="row">
                 {" "}
-                <div style={{width: "3rem"}} className="col-auto bg-light rounded-circle  ">
+                <div style={{ width: "3rem" }} className="col-auto bg-light rounded-circle  ">
                   <Heart
-                  isActive = {active}
+                    isActive={active}
                     onClick={() => {
-                      setActive(!active); {!active ? handleAddToWishlist(product) : removeProductFromCart(product._id) }
-                     ;
+                      setActive(!active); { !active ?  handleAddToWishlist(product) : removeProductFromCart(wishlistProductId._id)  }
+                      ;
                     }}
                     animationScale={1.25}
-                    
-                 / >            
-                  
+                  />
                 </div>
               </div>
             </div>
-            */}
+
           </div>
           <div className="card-body ">
             <span>
@@ -141,32 +139,32 @@ const ProductCard = ({ product }) => {
         </div>
 
         <div className="d-grid gap-2" style={{ width: "230px" }}>
-         
-              <button
-                className="btn btn-primary"
-                onClick={() => {
-                  handleAddToCart(product);
-                  handleDisable(event);
-                }}
-              >
-                Add to Cart
-              </button>
-            
-              <button
-              className="btn btn-outline-primary"
-                isActive={active}
-                onClick={() => {
-                  setActive(!active); 
-                  {
-                    !active
-                      ? handleAddToWishlist(product)
-                      : removeProductFromCart(product);
-                  };
-                
-                }}
-              >{!active ? " Add to Wishlist" :" Remove From Wishlist"}               
-              </button>{" "}  
-              {}         
+
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              handleAddToCart(product);
+              handleDisable(event);
+            }}
+          >
+            Add to Cart
+          </button>
+          {/* 
+          <button
+            className="btn btn-outline-primary"
+            isActive={active}
+            onClick={() => {
+              setActive(!active);
+              {
+                !active
+                  ? handleAddToWishlist(product)
+                  : removeProductFromCart(product);
+              };
+
+            }}
+          >{!active ? " Add to Wishlist" : " Remove From Wishlist"}
+          </button>{" "}
+          { } */}
         </div>
       </div>
       <Toaster position="top-center" reverseOrder={false} />

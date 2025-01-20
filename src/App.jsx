@@ -34,6 +34,7 @@ function App() {
               products={products}
               loadingProducts={loadingProducts}
               errorProducts={errorProducts}
+              wishlist={wishlist}
             />
           }
         />

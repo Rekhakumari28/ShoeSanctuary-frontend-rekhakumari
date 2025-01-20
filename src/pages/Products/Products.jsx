@@ -6,7 +6,8 @@ import { useParams, Link } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import ProductCard from "./ProductCard";
 
-const Products = ({ products, loadingProducts, errorProducts }) => {
+const Products = ({ products, loadingProducts, errorProducts, wishlist }) => {
+
   const [filterByCategory, setFilterByCategory] = useState([]);
   const [filterByRating, setFilterByRating] = useState(0);
   const [filterByPrice, setFilterByPrice] = useState("");
@@ -223,8 +224,7 @@ const Products = ({ products, loadingProducts, errorProducts }) => {
             ) : (
               handleSearchProductFromNavbar?.map((product) => 
                 
-              <ProductCard key={product._id} product={product}/>
-             
+              <ProductCard key={product._id} product={product} wishlist={wishlist}/>          
 
             ))}
           </div>
