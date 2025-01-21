@@ -8,54 +8,58 @@ const Login = () => {
   const [phone, setphone] = useState("");
 
 
-  const handleEmail = (event) => {
-  const emailInput = event.target.value;
-  const atIndex = emailInput.indexOf("@");
-  const dotIndex = emailInput.indexOf(".");
-  if (atIndex > 0 && dotIndex > atIndex) {
-    setEmail(emailInput);
-  } else {
-    console.log("Invalid Email");
-  }
-
+  const handleEmailInput = (event) => {
+    let emailId = event.target.value;
+    const atIndex = emailId.indexOf("@");
+    const dotIndex = emailId.indexOf(".");
+    if (atIndex > 0 && atIndex < dotIndex) {
+      setEmail(emailId);
+    } else {
+      setEmail(`Invalid Email`);
+    }
 };
 
 
   const handleUserLoginForm = async (event) => {
     event.preventDefault();
-    try {
-      const response = await fetch(
-        "https://backend-shoesanctuary-major-project.vercel.app/api/users",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username: username,
-            email: email,
-            password: password,
-            phone: phone,
-          }),
+    if(email !== "Invalid Email"){
+      try {
+        const response = await fetch(
+          "https://backend-shoesanctuary-major-project.vercel.app/api/users",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username: username,
+              email: email,
+              password: password,
+              phone: phone,
+            }),
+          }
+        );
+        if (!response.ok) {
+          throw "Failed add user.";
         }
-      );
-      if (!response.ok) {
-        throw "Failed add user.";
+        const data = await response.json();
+        console.log("user added", data);
+        if(data){
+          toast.success("User Added Successfully.")
+        
+        setUsername("");
+        setEmail("");
+        setPassword("");
+        setphone("");
+        }
+        
+      } catch (error) {
+        console.log("Error: ", error);
       }
-      const data = await response.json();
-      console.log("user added", data);
-      if(data){
-        toast.success("User Added Successfully.")
-      
-      setUsername("");
-      setEmail("");
-      setPassword("");
-      setphone("");
-      }
-      
-    } catch (error) {
-      console.log("Error: ", error);
+    }else{
+      toast.error("Please Correct Email.")
     }
+    
   };
 
   return (
@@ -79,11 +83,11 @@ const Login = () => {
               type="text"
               id="email"
               className="form-control"
-              placeholder="example@mail.com"
-              onChange={(event) => handleEmail(event)}
-              value={email}
+              placeholder="name@example.com"
+           
+              onChange={handleEmailInput}
             />
-            <label htmlFor="email">Email:</label>
+            <label htmlFor="email">Email: </label>
           </div>
           <div className="form-floating mb-3 ">
             <input
