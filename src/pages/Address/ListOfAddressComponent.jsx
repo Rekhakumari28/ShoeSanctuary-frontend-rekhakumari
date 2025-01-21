@@ -15,6 +15,7 @@ const ListOfAddressComponent = ({address}) => {
           if(data){
             setSuccessMessage("Address deleted Successfully.")
             console.log("Address deleted Successfully.", data)
+            window.location.reload()
           }
         } catch (error) {
           console.log("Error: ", error)

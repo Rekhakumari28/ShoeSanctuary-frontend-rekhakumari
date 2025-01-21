@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-import AddressComponent from "../Address/AddAddressComponent";
+import AddAddressComponent from "../Address/AddAddressComponent";
 
 
 const handleRemoveCart = async (cartId) =>{
@@ -118,6 +118,7 @@ console.log(cartId)
       }
       const data = await response.json();
       if (data) {
+        window.location.reload()
         setOrderPlaced(true);
          console.log("Order Placed", data);
          toast.success("Order Placed Successfully.")
@@ -186,7 +187,7 @@ console.log(cartId)
               <hr />
               <div className="my-2">
                 <h5>Add New Address</h5>
-               <AddressComponent />   
+               <AddAddressComponent />   
                </div>          
           </div>
           {!selectedAddress ? (

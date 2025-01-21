@@ -1,11 +1,11 @@
 import React from "react";
 import toast, { Toaster } from "react-hot-toast";
 
-export const reloadWishlistPage = ()=>{
+export const reloadWishlistPage = () => {
   return window.location.reload()
- } 
+}
 
- //remove from cart
+//remove from cart
 export const handleRemove = async (productId) => {
   try {
     const response = await fetch(
@@ -26,8 +26,8 @@ export const handleRemove = async (productId) => {
 };
 
 
-const RenderWishlistProduct = ({ wishlist }) => { 
- 
+const RenderWishlistProduct = ({ wishlist }) => {
+
   //add to cart
   const handleAddToCart = async (object) => {
     const value = object.product._id;
@@ -47,9 +47,13 @@ const RenderWishlistProduct = ({ wishlist }) => {
         throw "Failed to add product to cart.";
       }
       const data = await response.json();
-      console.log(data);
-      toast.success("Product is Moved to cart");
-      handleRemove(productId);
+      if (data) {
+        console.log(data);
+        toast.success("Product is Moved to cart");
+        handleRemove(productId);
+        window.location.reload()
+      }
+
     } catch (error) {
       toast.error("An error occured while fetching wishlist products. ", error);
     }
@@ -88,7 +92,7 @@ const RenderWishlistProduct = ({ wishlist }) => {
                 >
                   Remove{" "}
                 </button>
-               
+
               </div>
             </div>
           </div>

@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import Heart from "react-heart";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 
 const ProductCard = ({ product, wishlist }) => {
   const [active, setActive] = useState(false);
+  const [current, setCurrent] = useState(false)
   const { images, title, rating, price } = product;
-
+const navigate = useNavigate()
   const wishlistProductId = wishlist?.lenght > 0 && wishlist[wishlist?.length - 1]
 
 
@@ -31,7 +31,7 @@ const ProductCard = ({ product, wishlist }) => {
       if (data) {
         console.log(data);
         toast.success("Product is added to the wishlist.");
-
+        window.location.reload()
       }
     } catch (error) {
       toast.error("Error occured while adding product to wishlist. ");
@@ -79,14 +79,11 @@ const ProductCard = ({ product, wishlist }) => {
       const data = await response.json();
       if (data) {
         toast.success("Product is added to the cart");
+        window.location.reload()
       }
     } catch (error) {
       toast.error("Error: ", error);
     }
-  };
-
-  const handleDisable = (event) => {
-    event.target.disabled = true;
   };
 
   return (
@@ -113,8 +110,8 @@ const ProductCard = ({ product, wishlist }) => {
               <div className="card-img-overlay ">
                 <div className="row">
                   {" "}
-                  <div style={{ width: "3rem" }} className="col-auto bg-light rounded-circle  ">
-                    {/* <Heart
+                  <div className="col-auto bg-light rounded-circle  ">
+                               {/* <Heart
                     isActive={active}
                     onClick={() => {
                       setActive(!active); { !active ?  handleAddToWishlist(product) : removeProductFromCart(wishlistProductId._id)  }
@@ -122,7 +119,12 @@ const ProductCard = ({ product, wishlist }) => {
                     }}
                     animationScale={1.25}
                   /> */}
-                  </div>
+                <span className="mt-2">{product.rating}{" "}</span>
+                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-star-fill text-warning mb-1" viewBox="0 0 16 16">
+                 
+  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+</svg>
+                            </div>
                 </div>
               </div>
 
@@ -151,11 +153,10 @@ const ProductCard = ({ product, wishlist }) => {
           <button
             className="btn btn-primary"
             onClick={() => {
-              handleAddToCart(product);
-              handleDisable(event);
+              setCurrent(!current) ; {!current ? handleAddToCart(product) : navigate("/cart")}
             }}
-          >
-            Add to Cart
+          >{!current ? "Add to Cart" : "Go To Cart"}
+           
           </button>{" "}
           <button isActive={active}
             onClick={() => {

@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate} from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 
-const ProductDetails = ({ products, loadingProducts, errorProducts }) => {
+const ProductDetails = ({ products, loadingProducts, errorProducts, wishlist }) => {
+  const [active, setActive] = useState(false);
+  const [current, setCurrent] = useState(false)
+  const navigate = useNavigate()
   const productId = useParams();
 
   const productData = products?.find((prod) => prod._id == productId.productId);
@@ -12,11 +15,12 @@ const ProductDetails = ({ products, loadingProducts, errorProducts }) => {
   const similerProduct = products?.filter(
     (product) => product.category?.category === productData?.category?.category
   );
-
+ 
+  const wishlistProductId = wishlist?.lenght > 0 && wishlist[wishlist?.length - 1]
+ 
   //add to wishlist
   const handleAddToWishlist = async (object) => {
     const value = object;
-
     try {
       const response = await fetch(
         `https://backend-shoesanctuary-major-project.vercel.app/api/wishlists`,
@@ -28,14 +32,38 @@ const ProductDetails = ({ products, loadingProducts, errorProducts }) => {
           body: JSON.stringify({ product: value }),
         }
       );
-
       if (!response.ok) {
         throw "Failed to add product.";
       }
       const data = await response.json();
-      toast.success("Product is added to wishlist.", data);
+      if (data) {
+        console.log(data);
+        toast.success("Product is added to the wishlist.");
+        window.location.reload()
+      }
     } catch (error) {
-      toast.error("Failed to fetch wishlist data from backend. ", error);
+      toast.error("Error occured while adding product to wishlist. ");
+    }
+  };
+
+  //remove product from cart
+  const removeProductFromCart = async (productId) => {
+
+    try {
+      const response = await fetch(
+        `https://backend-shoesanctuary-major-project.vercel.app/api/wishlists/${productId}`,
+        { method: "DELETE" }
+      );
+      if (!response.ok) {
+        throw "Failed to remove product from wishlist.";
+      }
+      const data = await response.json();
+      if (data) {
+
+        toast.success("Product removed from wishlist Successfully.");
+      }
+    } catch (error) {
+      toast.error("An error occured while fetching wishlist products.", error);
     }
   };
 
@@ -57,11 +85,15 @@ const ProductDetails = ({ products, loadingProducts, errorProducts }) => {
         throw "Failed to add product to cart.";
       }
       const data = await response.json();
-      toast.success("Product is added to cart", data);
+      if (data) {
+        toast.success("Product is added to the cart");
+        window.location.reload()
+      }
     } catch (error) {
-      toast.error("Failed to fetch wishlist data from backend. ", error);
+      toast.error("Error: ", error);
     }
   };
+
 
   return (
     <div>
@@ -96,31 +128,34 @@ const ProductDetails = ({ products, loadingProducts, errorProducts }) => {
                   <div className="row">
                     {" "}
                     <div className="col-auto bg-light rounded-circle  ">
-                      <Link onClick={() => handleAddToWishlist(productData)}>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          className="bi bi-heart"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15" />
-                        </svg>
-                      </Link>
+                    <span className="mt-2">{productData?.rating}{" "}</span>
+                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-star-fill text-warning mb-1" viewBox="0 0 16 16">
+                 
+  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+</svg>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="d-grid gap-2" style={{ width: "450px" }}>
-              <button
-                className="btn btn-primary"
-                onClick={() => handleAddToCart(productData)}
-              >
-                Add to Cart
-              </button>
-            </div>
+             <div className="d-grid gap-2">
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              setCurrent(!current) ; {!current ? handleAddToCart(productData) : navigate("/cart")}
+            }}
+          >{!current ? "Add to Cart" : "Go To Cart"}
+           
+          </button>{" "}
+          <button isActive={active}
+            onClick={() => {
+              setActive(!active); { !active ? handleAddToWishlist(productData) : removeProductFromCart(wishlistProductId._id) }
+              ;
+            }}
+            className="btn btn-outline-primary"
+          >{!active ? "Add To Wishlist" : "Remove From Wishlist"}</button>
+
+        </div>
           </div>
           <div className="col-md-7 shadow-lg ">
             <div
@@ -161,20 +196,19 @@ const ProductDetails = ({ products, loadingProducts, errorProducts }) => {
                           <div className="row">
                             {" "}
                             <div className="col-auto bg-light rounded-circle  ">
-                              <Link
-                                onClick={() => handleAddToWishlist(product)}
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="16"
-                                  height="16"
-                                  fill="currentColor"
-                                  className="bi bi-heart"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15" />
-                                </svg>
-                              </Link>
+                               {/* <Heart
+                    isActive={active}
+                    onClick={() => {
+                      setActive(!active); { !active ?  handleAddToWishlist(product) : removeProductFromCart(wishlistProductId._id)  }
+                      ;
+                    }}
+                    animationScale={1.25}
+                  /> */}
+                <span className="mt-2">{product.rating}{" "}</span>
+                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-star-fill text-warning mb-1" viewBox="0 0 16 16">
+                 
+  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+</svg>
                             </div>
                           </div>
                         </div>
@@ -186,12 +220,12 @@ const ProductDetails = ({ products, loadingProducts, errorProducts }) => {
                       <span>Price: ${product.price}</span>
                     </div>
                   </div>
-                  <div>
+                  <div className="d-grid gap-2" style={{ width: "230px" }} >
                     <button
                       className="btn btn-primary"
-                      onClick={() => handleAddToCart(product)}
+                      onClick={() => navigate(`/productDetails/${product._id}`)}
                     >
-                      Add to Cart
+                      View Details
                     </button>
                   </div>
                 </div>

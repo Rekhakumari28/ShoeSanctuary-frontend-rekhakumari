@@ -36,6 +36,7 @@ const AddressComponent = () => {
       if (data) {
         toast.success("Address added successfully!");
         console.log("address added", data);
+        window.location.reload()
       }
     } catch (error) {
       console.log("Error: ", error);
