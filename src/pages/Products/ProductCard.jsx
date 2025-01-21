@@ -140,9 +140,7 @@ const navigate = useNavigate()
               <strong  >Price:</strong> ${price}
             </span>{" "}
             <br />
-            <span >
-              <strong  >Rating:</strong> {rating}
-            </span>{" "}
+            
 
           </div>
 

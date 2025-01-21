@@ -157,7 +157,7 @@ const RenderCartProduct = ({ orderItems, products }) => {
             <div className="col-md-8  ">
               <div className="mx-2">
                 <h4>{product.product.title}</h4>
-                <p>Price: {product.product.price}</p>
+                <p>Price: ${product.product.price}</p>
                 <p>Rating: {product.product.rating}</p>
                 <p>Quantity: <button className="rounded-circle" onClick={() => addQuantity(product._id, product)}>+</button> {" "}
                   <span>{product.quantity}</span>  {" "}
