@@ -5,7 +5,9 @@ import ProductDetails from "./pages/ProductDetails/ProductDetails";
 import Cart from "./pages/Cart/Cart";
 import Wishlist from "./pages/Wishlist/Wishlist";
 import Address from "./pages/Address/Address";
-import Auth from "./pages/AuthPage/Auth";
+import Login from './pages/AuthPage/Login'
+import Checkout from "./pages/Checkout/Checkout";
+import UsersProfile from "./pages/AuthPage/UsersProfile";
 import {
   useGetWishlist,
   useGetProducts,
@@ -14,14 +16,13 @@ import {
   useGetOrderItems,
   useGetCart
 } from "./components/FatchingData";
-import Checkout from "./pages/Checkout/Checkout";
 
 function App() {
   const { wishlist, loadingWishlist, errorWishlist } = useGetWishlist();
   const { products, loadingProducts, errorProducts } = useGetProducts();
   const { address, loadingAddress, errorAddress } = useGetAddress();
   const { user, loadingUser, errorUser } = useGetUserByEmail(
-    "rekha.kumari1928@gmail.com"
+    "rekha@xyz.com"
   );
   const { orderItems, loadingOrderItems, errorOrderItems } = useGetOrderItems();
 const {cart , loadingCart, errorCart} = useGetCart()
@@ -98,11 +99,12 @@ const {cart , loadingCart, errorCart} = useGetCart()
           }
         />
         <Route
-          path="/auth"
+          path="/login"
           element={
-            <Auth user={user} loadingUser={loadingUser} errorUser={errorUser} />
+            <Login />
           }
         />
+        <Route path="/userProfile"  element={<UsersProfile user={user} loadingUser={loadingUser} errorUser={errorUser} />} />
         <Route path="/checkout"  element={<Checkout/>} />
       </Routes>
     </>

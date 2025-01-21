@@ -1,31 +1,31 @@
 import React from 'react'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
-import { Link } from 'react-router-dom'
-const UsersProfile = () => {
+
+const UsersProfile = ({user}) => {
+    const {username , email , phone} = user
   return (
     <div>
-        <Header/>
-        <div className='row'>
-            <div className='col-md-2'>
-                <div className='border' >
-                    <ul className='nav flex-column '>
-                        <li className='nav-item'>
-                            <Link className='nav-link active' aria-current="page" to="/login">Login</Link>
-                        </li>
-                        <li className='nav-item'>
-                            <Link className='nav-link' to="/address">Address</Link>
-                        </li>
-                        <li className='nav-item'>
-                            <Link className='nav-link' to="/checkout">Checkout</Link>
-                        </li>
-                    </ul>
-                </div>
+    <Header/>  
+    
+    <div className="container px-4  py-3">
+      <h2>Your Profile</h2>
+      <div className="row text-center">
+          
+            <div className='card'>
+              <div className='card-body bg-body-tertiary'>
+              <span>{username}</span> {" "} | {" "} 
+                <span>Email: {email}</span> {" "} | {" "} 
+                <span>Phone: {phone}</span>
+              </div>
+              
             </div>
-            <div className='col-md-10'></div>
+          
         </div>
-        <Footer/>
     </div>
+   
+    <Footer/>
+  </div>
   )
 }
 

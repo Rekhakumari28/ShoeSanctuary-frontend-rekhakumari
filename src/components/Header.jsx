@@ -86,10 +86,17 @@ const Header = (props) => {
                       <li>
                         <hr className="dropdown-divider" />
                       </li>
+                      
                       <li>
                         {" "}
-                        <Link to="/auth" className="nav-link ">
-                          Login
+                        <Link to="/userProfile" className="nav-link ">
+                           Profile
+                        </Link>
+                      </li>
+                      <li>
+                        {" "}
+                        <Link to="/login" className="nav-link ">
+                          Login 
                         </Link>
                       </li>
                       <li>

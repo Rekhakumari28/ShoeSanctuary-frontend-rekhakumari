@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -63,7 +65,8 @@ const Login = () => {
   };
 
   return (
-    <div>    
+    <div>  
+      <Header />  
       <div className="container py-2">
         <h2>User Login</h2>
         <form onSubmit={handleUserLoginForm}>
@@ -118,6 +121,7 @@ const Login = () => {
           </div>
         </form>
       </div>
+      <Footer/>
       <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
