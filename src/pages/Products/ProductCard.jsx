@@ -53,7 +53,6 @@ const ProductCard = ({ product, wishlist }) => {
       const data = await response.json();
       if (data) {
         toast.success("Product removed from wishlist Successfully.");
-        window.location.reload()
       }
     } catch (error) {
       toast.error("An error occured while fetching wishlist products.", error);
