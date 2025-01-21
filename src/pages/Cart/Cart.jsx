@@ -3,16 +3,16 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import RenderCartProduct from "./RenderCartProduct";
 import PriceDetails from "./PriceDetails";
+import { useGetOrderItems } from "../../components/FatchingData";
 
 const Cart = ({
-  orderItems,
-  products,
-  loadingOrderItems,
-  errorOrderItems,
+    products,
   address,
   user,
   cart
 }) => {
+
+  const { orderItems,loadingOrderItems, errorOrderItems}= useGetOrderItems()
 
   return (
     <div>

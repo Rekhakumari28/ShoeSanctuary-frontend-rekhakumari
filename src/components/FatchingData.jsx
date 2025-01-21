@@ -26,7 +26,8 @@ export const useGetWishlist = ()=>{
     fetch("https://backend-shoesanctuary-major-project.vercel.app/api/wishlists")
     .then((res) => res.json())
     .then((data) => {
-      setWishlist(data)       
+      setWishlist(data)
+            
     })
     .catch((error) => setErrorWishlist(error.message))
     .finally(() => setLoadingWishlist(false));
@@ -43,7 +44,8 @@ export const useGetAddress = ()=>{
     fetch("https://backend-shoesanctuary-major-project.vercel.app/api/addresses")
     .then((res) => res.json())
     .then((data) => {
-      setAddress(data)       
+      setAddress(data)
+           
     })
     .catch((error) => setErrorAddress(error.message))
     .finally(() => setLoadingAddress(false));
@@ -60,7 +62,8 @@ export const useGetUserByEmail = (objectEmail)=>{
     fetch(`https://backend-shoesanctuary-major-project.vercel.app/api/users/${objectEmail}`)
     .then((res) => res.json())
     .then((data) => {
-      setUser(data)       
+      setUser(data)
+            
     })
     .catch((error) => setErrorUser(error.message))
     .finally(() => setLoadingUser(false));
@@ -77,7 +80,7 @@ export const useGetOrderItems = ()=>{
     fetch("https://backend-shoesanctuary-major-project.vercel.app/api/orderItems")
     .then((res) => res.json())
     .then((data) => {
-      setOrderItems(data)       
+      setOrderItems(data)            
     })
     .catch((error) => setErrorOrderItems(error.message))
     .finally(() => setLoadingOrderItems(false));

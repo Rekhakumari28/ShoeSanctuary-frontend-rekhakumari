@@ -83,6 +83,7 @@ const {cart , loadingCart, errorCart} = useGetCart()
               products={products}
               loadingProducts={loadingProducts}
               errorProducts={errorProducts}
+              wishlist={wishlist}
             />
           }
         />

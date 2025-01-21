@@ -86,7 +86,7 @@ const navigate = useNavigate()
   const deliveryCharges = orderAmount > 2000 ? 0 : 100;
 
   const afterDiscountTotalAmount = orderAmount - totalOrderDiscount;
-  const totalSavedAmount = totalOrderDiscount + deliveryCharges;
+  const totalSavedAmount = parseInt(totalOrderDiscount) + parseInt(deliveryCharges);
 
 const cartId = cart?.length > 0 && cart[cart?.length-1]._id 
 console.log(cartId)

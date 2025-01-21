@@ -30,7 +30,7 @@ const RenderWishlistProduct = ({ wishlist }) => {
 
   //add to cart
   const handleAddToCart = async (object) => {
-    const value = object.product._id;
+    const value = object._id;
     const productId = object._id;
     try {
       const response = await fetch(
@@ -70,16 +70,16 @@ const RenderWishlistProduct = ({ wishlist }) => {
                 <div style={{ height: "180px", width: "150px" }}>
                   <img
                     className="img-fluid"
-                    src={product.product.images}
-                    alt={product.product.title}
+                    src={product.images}
+                    alt={product.title}
                   />
                 </div>
               </div>
               <div className="col-md-7">
-                <h5>{product.product.title}</h5>
-                <span>Price: ₹{product.product.price}</span> {"| "}
-                <span>Rating: {product.product.rating}</span>
-                <p>Discount: {product.product.discount} </p>
+                <h5>{product.title}</h5>
+                <span>Price: ₹{product.price}</span> {"| "}
+                <span>Rating: {product.rating}</span>
+                <p>Discount: {product.discount} </p>
                 <button
                   className="btn btn-outline-primary "
                   onClick={() => handleAddToCart(product)}
