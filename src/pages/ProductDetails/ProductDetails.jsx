@@ -39,7 +39,7 @@ const ProductDetails = ({ products, loadingProducts, errorProducts, wishlist }) 
       if (data) {
         console.log(data);
         toast.success("Product is added to the wishlist.");
-        window.location.reload()
+       
       }
     } catch (error) {
       toast.error("Error occured while adding product to wishlist. ");
@@ -87,7 +87,7 @@ const ProductDetails = ({ products, loadingProducts, errorProducts, wishlist }) 
       const data = await response.json();
       if (data) {
         toast.success("Product is added to the cart");
-        window.location.reload()
+       
       }
     } catch (error) {
       toast.error("Error: ", error);
