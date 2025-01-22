@@ -87,7 +87,7 @@ const ProductCard = ({ product, wishlist }) => {
   };
 
   return (
-    <div className="col-md-3 ms-3 m-2 p-2">
+    <div className="col-md-3 p-2">
       <div>
 
         <div

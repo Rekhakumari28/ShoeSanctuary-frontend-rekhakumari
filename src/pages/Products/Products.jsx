@@ -212,7 +212,7 @@ const Products = ({ products, loadingProducts, errorProducts, wishlist }) => {
           </div>
         </div>
         <div className="col-md-10">
-          <div className="row">
+          <div className="row ms-2">
             {loadingProducts ? (
               <p className="text-center p-3 mb-2 bg-primary-subtle text-info-emphasis fw-normal ">
                 Loading...
