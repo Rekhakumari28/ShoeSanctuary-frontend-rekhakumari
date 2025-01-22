@@ -79,7 +79,7 @@ const ProductCard = ({ product, wishlist }) => {
       const data = await response.json();
       if (data) {
         toast.success("Product is added to the cart");
-        setTimeout(handleReload, 7000);
+       
       }
     } catch (error) {
       toast.error("Error: ", error);
@@ -87,7 +87,7 @@ const ProductCard = ({ product, wishlist }) => {
   };
 
   return (
-    <div className="col-md-3 my-2 p-2">
+    <div className="col-md-3 ms-3 m-2 p-2">
       <div>
 
         <div

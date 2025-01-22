@@ -98,7 +98,7 @@ const ProductDetails = ({ products, loadingProducts, errorProducts, wishlist }) 
   return (
     <div>
       <Header />
-      <div className="container">
+      <div className="container-fluid">
         {loadingProducts && (
           <p className="text-center p-3 mb-2 bg-primary-subtle text-info-emphasis fw-normal ">
             Loading...
@@ -112,7 +112,7 @@ const ProductDetails = ({ products, loadingProducts, errorProducts, wishlist }) 
         <div className="row my-3">
           <h2>Product Details</h2>
 
-          <div className="col-md-5 ">
+          <div className="col-auto ">
             <div
               className="card border-0 shadow-lg"
               style={{ height: "400px", width: "450px" }}
@@ -157,7 +157,7 @@ const ProductDetails = ({ products, loadingProducts, errorProducts, wishlist }) 
 
         </div>
           </div>
-          <div className="col-md-7 shadow-lg ">
+          <div className="col-auto shadow-lg ">
             <div
               className="card border-0 "
               style={{ height: "400px", width: "500px" }}

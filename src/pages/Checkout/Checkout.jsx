@@ -13,7 +13,7 @@ const Checkout = () => {
         
           <div className="p-4 text-center  ">
             <Link to={`/products`}>
-            <img style={{height: "500px" , width: "500px"}} src="https://cdn.undraw.co/illustrations/order-confirmed_m9e9.svg" alt="Order Confermed" />
+            <img className='p-2' style={{maxWidth: "350px" , display: 'block', margin: "auto"}} src="https://cdn.undraw.co/illustrations/order-confirmed_m9e9.svg" alt="Order Confermed" />
               <p style={{textDecoration: "none"}}>Your Order is Placed Successfully. Please Continue Shopping with us.</p>
             </Link>
           </div>
