@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-const AddressComponent = () => {
+const AddAddressComponent = () => {
   const [formData, setFormData] = useState({
     address: "",
     city: "",
@@ -107,4 +107,4 @@ const AddressComponent = () => {
   );
 };
 
-export default AddressComponent;
+export default AddAddressComponent;

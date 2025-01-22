@@ -53,6 +53,7 @@ const Login = () => {
         setEmail("");
         setPassword("");
         setphone("");
+        window.location.reload()
         }
         
       } catch (error) {

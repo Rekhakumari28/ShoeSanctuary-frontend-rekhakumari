@@ -95,6 +95,7 @@ const Products = ({ products, loadingProducts, errorProducts, wishlist }) => {
         value={searchProduct}
         searchProducts={(event) => setSearchProduct(event.target.value)}
       />
+      <div className="container-fluid">
       <div className="row">
         <div className="col-md-2 bg-body-tertiary">
           {/* categoryFilter */}
@@ -229,6 +230,7 @@ const Products = ({ products, loadingProducts, errorProducts, wishlist }) => {
             ))}
           </div>
         </div>
+      </div>
       </div>
       <Toaster position="top-center" reverseOrder={false} />
       <Footer />

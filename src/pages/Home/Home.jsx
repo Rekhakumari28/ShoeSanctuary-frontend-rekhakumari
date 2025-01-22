@@ -7,9 +7,11 @@ function Home() {
   return (
     <div >
         <Header />
+        <div className='container'>
         <ImageSlide/>
         <Category/>
-        <ProductsSlide/>        
+        <ProductsSlide/> 
+        </div>       
         <Footer/>
     </div>
   )

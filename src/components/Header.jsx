@@ -85,7 +85,7 @@ const Header = (props) => {
                     </Link>
                     <ul className="dropdown-menu ">
                       <li>
-                        <strong className="mx-2">{userProfile?.username}</strong>
+                        <strong className="ms-4">{userProfile?.username}</strong>
                       </li>
                       <li>
                         <hr className="dropdown-divider" />
@@ -93,19 +93,19 @@ const Header = (props) => {
                       
                       <li>
                         {" "}
-                        <Link to="/userProfile" className="nav-link ">
+                        <Link to="/userProfile" className="nav-link ms-4">
                            Profile
                         </Link>
                       </li>
                       <li>
                         {" "}
-                        <Link to="/login" className="nav-link ">
+                        <Link to="/login" className="nav-link ms-4">
                           Login 
                         </Link>
                       </li>
                       <li>
                         {" "}
-                        <Link to="/address" className="nav-link ">
+                        <Link to="/address" className="nav-link ms-4">
                           Address
                         </Link>
                       </li>
