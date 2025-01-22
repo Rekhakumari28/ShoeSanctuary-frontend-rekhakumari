@@ -3,7 +3,9 @@ import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 
 const UsersProfile = ({user}) => {
-    const {username , email , phone} = user
+   
+    const userProfile = user?.length > 0 && user[user?.length -1]
+
   return (
     <div>
     <Header/>  
@@ -14,9 +16,9 @@ const UsersProfile = ({user}) => {
           
             <div className='card'>
               <div className='card-body bg-body-tertiary'>
-              <span>{username}</span> {" "} | {" "} 
-                <span>Email: {email}</span> {" "} | {" "} 
-                <span>Phone: {phone}</span>
+              <span>{userProfile?.username}</span> {" "} | {" "} 
+                <span>Email: {userProfile?.email}</span> {" "} | {" "} 
+                <span>Phone: {userProfile?.phone}</span>
               </div>
               
             </div>

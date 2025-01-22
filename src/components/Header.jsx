@@ -3,12 +3,13 @@ import { Link } from "react-router-dom";
 import {
   useGetWishlist,
   useGetOrderItems,
- 
+ useGetUserByEmail
 } from "./FatchingData";
 const Header = (props) => {
   const { wishlist } = useGetWishlist();
   const wishlistCounter = wishlist.length > 0 ? wishlist.length : "";
- 
+ const {user} = useGetUserByEmail()
+ const userProfile = user?.length > 0 && user[user?.length -1]
   const { orderItems } = useGetOrderItems();
   const orderItemsCounter = orderItems && orderItems.length > 0 ? orderItems.length : "";
   return (
@@ -84,7 +85,7 @@ const Header = (props) => {
                     </Link>
                     <ul className="dropdown-menu ">
                       <li>
-                        <strong className="mx-2">Hello</strong>
+                        <strong className="mx-2">{userProfile?.username}</strong>
                       </li>
                       <li>
                         <hr className="dropdown-divider" />

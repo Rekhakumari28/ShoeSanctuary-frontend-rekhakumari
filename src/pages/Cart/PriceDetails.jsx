@@ -89,12 +89,12 @@ const navigate = useNavigate()
   const totalSavedAmount = parseInt(totalOrderDiscount) + parseInt(deliveryCharges);
 
 const cartId = cart?.length > 0 && cart[cart?.length-1]._id 
-console.log(cartId)
+const userId = user?.length > 0 && user[user?.length -1]._id
 
   const handlePlaceOrder = async (data) => {
     const orderItem = data?.map((object) => object._id);
     const selectedAddressId = selectedAddress._id;
-    const userId = user._id;
+    
     try {
       const response = await fetch(
         "https://backend-shoesanctuary-major-project.vercel.app/api/carts",

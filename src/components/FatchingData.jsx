@@ -53,13 +53,13 @@ export const useGetAddress = ()=>{
   return { address , loadingAddress, errorAddress }
 } 
 
-export const useGetUserByEmail = (objectEmail)=>{
+export const useGetUserByEmail = ()=>{
   const [user, setUser] = useState([]);
   const [loadingUser, setLoadingUser] = useState(false);
   const [errorUser, setErrorUser] = useState(null);
  useEffect(()=>{
   setLoadingUser(true);
-    fetch(`https://backend-shoesanctuary-major-project.vercel.app/api/users/${objectEmail}`)
+    fetch(`https://backend-shoesanctuary-major-project.vercel.app/api/users`)
     .then((res) => res.json())
     .then((data) => {
       setUser(data)

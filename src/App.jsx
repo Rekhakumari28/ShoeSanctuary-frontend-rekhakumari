@@ -17,13 +17,13 @@ import {
   useGetCart
 } from "./components/FatchingData";
 
+
+
 function App() {
   const { wishlist, loadingWishlist, errorWishlist } = useGetWishlist();
   const { products, loadingProducts, errorProducts } = useGetProducts();
   const { address, loadingAddress, errorAddress } = useGetAddress();
-  const { user, loadingUser, errorUser } = useGetUserByEmail(
-    "rekha@xyz.com"
-  );
+  const { user, loadingUser, errorUser } = useGetUserByEmail();
   const { orderItems, loadingOrderItems, errorOrderItems } = useGetOrderItems();
 const {cart , loadingCart, errorCart} = useGetCart()
   return (
