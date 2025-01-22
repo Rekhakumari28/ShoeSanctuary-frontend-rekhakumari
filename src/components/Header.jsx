@@ -13,10 +13,10 @@ const Header = (props) => {
   const { orderItems } = useGetOrderItems();
   const orderItemsCounter = orderItems && orderItems.length > 0 ? orderItems.length : "";
   return (
-    <div>
+    
       <header>
         <nav className="navbar navbar-expand-lg bg-body-tertiary">
-          <div className="container ">
+          <div className="container">
             <Link to="/" className="navbar-brand">
               <h1 id="brandName">ShoeSanctuary</h1>
               <small className="fs-6">
@@ -153,7 +153,7 @@ const Header = (props) => {
           </div>
         </nav>
       </header>
-    </div>
+   
   );
 };
 

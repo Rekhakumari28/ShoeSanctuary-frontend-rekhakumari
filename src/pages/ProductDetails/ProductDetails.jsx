@@ -98,7 +98,7 @@ const ProductDetails = ({ products, loadingProducts, errorProducts, wishlist }) 
   return (
     <div>
       <Header />
-      <div className="container-fluid">
+      <div className="container">
         {loadingProducts && (
           <p className="text-center p-3 mb-2 bg-primary-subtle text-info-emphasis fw-normal ">
             Loading...
