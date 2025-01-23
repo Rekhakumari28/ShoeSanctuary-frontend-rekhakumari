@@ -62,7 +62,7 @@ const navigate = useNavigate()
     orderItems
       ?.map((product) => product.product.price *( product.product.discount/100)  * product.quantity)
       .reduce((acc, curr) => acc + curr, 0)
-      .toFixed(2);
+      .toFixed(0);
 
   const deliveryCharges = orderAmount > 1000 ? 0 : 100;
   const afterDiscountTotalAmount = orderAmount - totalOrderDiscount+ deliveryCharges
@@ -91,7 +91,12 @@ const handleRemoveCart = async (cartId) =>{
 }
 
   const handlePlaceOrder = async (data) => {
-    const orderItem = data?.map((object) => object._id);
+    let orderItemArray = []
+    for(let product of data){
+      orderItemArray.push(product._id)
+    }
+    console.log(orderItemArray)
+    // const orderItem = data?.map((object) => object._id);
     const selectedAddressId = selectedAddress._id;
     
     try {
@@ -103,7 +108,7 @@ const handleRemoveCart = async (cartId) =>{
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            orderItem: orderItem,
+            orderItem: orderItemArray,
             shippingAddress: selectedAddressId,
             status: "Pending",
             totalPrice: afterDiscountTotalAmount,
