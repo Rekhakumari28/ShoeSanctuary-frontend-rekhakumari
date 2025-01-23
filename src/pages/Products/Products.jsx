@@ -2,11 +2,11 @@ import React from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { useState, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import ProductCard from "./ProductCard";
 
-const Products = ({ products, loadingProducts, errorProducts, wishlist }) => {
+const Products = ({ products, loadingProducts, errorProducts, wishlist, orderItems }) => {
 
   const [filterByCategory, setFilterByCategory] = useState([]);
   const [filterByRating, setFilterByRating] = useState(0);
@@ -223,16 +223,14 @@ const Products = ({ products, loadingProducts, errorProducts, wishlist }) => {
                 {errorProducts}
               </p>
             ) : (
-              handleSearchProductFromNavbar?.map((product) => 
-                
-              <ProductCard key={product._id} product={product} wishlist={wishlist}/>          
-
+              handleSearchProductFromNavbar?.map((product) =>                 
+              <ProductCard key={product._id} product={product} wishlist={wishlist} orderItems={orderItems}/> 
             ))}
           </div>
         </div>
       </div>
       </div>
-      <Toaster position="top-center" reverseOrder={false} />
+   
       <Footer />
     </div>
   );

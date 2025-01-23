@@ -2,7 +2,10 @@ import React from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import RenderWishlistProduct from "./RenderWishlistProduct";
-const Wishlist = ({ wishlist, loadingWishlist, errorWishlist }) => {
+import { useGetWishlist, useGetOrderItems } from "../../components/FatchingData";
+const Wishlist = () => {
+const {wishlist, loadingWishlist, errorWishlist} = useGetWishlist()
+const { orderItems } = useGetOrderItems()
   return (
     <div>
       <Header wishlist={wishlist} />
@@ -18,7 +21,7 @@ const Wishlist = ({ wishlist, loadingWishlist, errorWishlist }) => {
         ) : (
           <div>
             {wishlist?.length > 0 ? (
-              <RenderWishlistProduct wishlist={wishlist} />
+              <RenderWishlistProduct wishlist={wishlist} orderItems={orderItems}/>
             ) : (
               <p className="p-3 bg-body-tertiary rounded ">
                 Wishlist is Empty.

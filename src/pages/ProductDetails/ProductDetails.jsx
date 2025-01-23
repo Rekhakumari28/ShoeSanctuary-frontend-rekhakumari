@@ -165,7 +165,9 @@ const ProductDetails = ({ products, loadingProducts, errorProducts, wishlist }) 
               <div className="card-body">
                 <h4>{productData?.title}</h4>
                 <p>Rating: {productData?.rating}</p>
-                <p>Price: {productData?.price}</p>
+                <p>Price: ₹{productData?.price}</p>
+                <p>Discount: {productData.discount}%</p>
+                <p>Size: {productData.size.join(", ")}</p>
                 <p>Category: {productData?.category?.category}</p>
                 <p>Description: {productData?.description}</p>
               </div>
@@ -173,7 +175,7 @@ const ProductDetails = ({ products, loadingProducts, errorProducts, wishlist }) 
           </div>
         </div>
         <hr />
-        <div className="text-center">
+        <div >
           <h3>Similer Products</h3>
           <div className="row">
             {similerProduct?.map((product) => (
@@ -188,22 +190,14 @@ const ProductDetails = ({ products, loadingProducts, errorProducts, wishlist }) 
                       <Link to={`/productDetails/${product._id}`}>
                         <img
                           style={{ height: "150px", width: "150px" }}
-                          className="img-fluid rounded  mt-1"
+                          className="img-fluid rounded  mt-3"
                           src={product.images}
                           alt={product.title}
                         />
                         <div className="card-img-overlay ">
                           <div className="row">
                             {" "}
-                            <div className="col-auto bg-light rounded-circle  ">
-                               {/* <Heart
-                    isActive={active}
-                    onClick={() => {
-                      setActive(!active); { !active ?  handleAddToWishlist(product) : removeProductFromCart(wishlistProductId._id)  }
-                      ;
-                    }}
-                    animationScale={1.25}
-                  /> */}
+                            <div className="col-auto bg-light rounded-circle  ">                              
                 <span className="mt-2">{product.rating}{" "}</span>
                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-star-fill text-warning mb-1" viewBox="0 0 16 16">
                  
@@ -217,7 +211,8 @@ const ProductDetails = ({ products, loadingProducts, errorProducts, wishlist }) 
                     <div className="card-body">
                       <span>{product.title.substring(0, 20)} </span>
                       <br />
-                      <span>Price: ${product.price}</span>
+                      <span>Price: ₹{product.price}</span>{" "}|{" "}
+                      <span>Discount: {product.discount}%</span>
                     </div>
                   </div>
                   <div className="d-grid gap-2" style={{ width: "230px" }} >

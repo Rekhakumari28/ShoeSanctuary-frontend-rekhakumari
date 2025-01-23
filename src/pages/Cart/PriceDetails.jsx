@@ -4,24 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import AddAddressComponent from "../Address/AddAddressComponent";
 
 
-const handleRemoveCart = async (cartId) =>{
-  try {
-    const response = await fetch(
-      `https://backend-shoesanctuary-major-project.vercel.app/api/carts/${cartId}`,
-      { method: "DELETE" }
-    );
-    if (!response.ok) {
-      throw "Failed to remove cart.";
-    }
-    const data = await response.json();
-    if (data) {
-      toast.success("Item removed Successfully.");
-      window.location.reload()
-    }
-  } catch (error) {
-    toast.error("An error occured while removing item from cart.");
-  }
-}
+
 
 const handleRemoveOrderItems = async(orderItemId) =>{
   try {
@@ -79,7 +62,7 @@ const navigate = useNavigate()
   const totalOrderDiscount =
     orderItems.length > 0 &&
     orderItems
-      ?.map((product) => product.product.price * 0.1 * product.quantity)
+      ?.map((product) => product.product.price *( product.product.discount/100)  * product.quantity)
       .reduce((acc, curr) => acc + curr, 0)
       .toFixed(2);
 
@@ -90,6 +73,25 @@ const navigate = useNavigate()
 
 const cartId = cart?.length > 0 && cart[cart?.length-1]._id 
 const userId = user?.length > 0 && user[user?.length -1]._id
+
+const handleRemoveCart = async (cartId) =>{
+  try {
+    const response = await fetch(
+      `https://backend-shoesanctuary-major-project.vercel.app/api/carts/${cartId}`,
+      { method: "DELETE" }
+    );
+    if (!response.ok) {
+      throw "Failed to remove cart.";
+    }
+    const data = await response.json();
+    if (data) {
+      toast.success("Item removed Successfully.");
+      window.location.reload()
+    }
+  } catch (error) {
+    toast.error("An error occured while removing item from cart.");
+  }
+}
 
   const handlePlaceOrder = async (data) => {
     const orderItem = data?.map((object) => object._id);
@@ -141,33 +143,32 @@ const userId = user?.length > 0 && user[user?.length -1]._id
           <hr />
           <p>
             <span>
-              Price: ({totalQuantity && totalQuantity} :{" "}
+              Price: ( {totalQuantity && totalQuantity} :{" "}
               {totalQuantity > 1 ? "item" + "s" : "item"} )
             </span>
-            <span className="float-end">${orderAmount && orderAmount}</span>
+            <span className="float-end">₹{orderAmount && orderAmount}</span>
           </p>
           <p>
             <span>Discount:</span>
             <span className="float-end">
-              -${totalOrderDiscount && totalOrderDiscount} (10% Item above
-              $1000)
+              -₹{totalOrderDiscount && totalOrderDiscount} 
             </span>
           </p>
           <p>
             <span>Delivery Charges:</span>
             <span className="float-end">
-              {orderAmount && orderAmount > 5000 ? "Free Delivery" : "$" + 100}
+              {deliveryCharges > 0 ? deliveryCharges : "Free Delivery"}
             </span>
           </p>
           <hr />
           <h4>
             Total Amount{" "}
             <span className="float-end">
-              $ {afterDiscountTotalAmount && afterDiscountTotalAmount}
+            ₹{afterDiscountTotalAmount && afterDiscountTotalAmount}
             </span>
           </h4>
           <hr />
-          <p>You save ${totalSavedAmount && totalSavedAmount} on this order.</p>
+          <p>You save₹{totalSavedAmount && totalSavedAmount} on this order.</p>
           <hr />
           <h4>Select address</h4>
 

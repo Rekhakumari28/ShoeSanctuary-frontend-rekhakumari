@@ -25,7 +25,7 @@ function App() {
   const { address, loadingAddress, errorAddress } = useGetAddress();
   const { user, loadingUser, errorUser } = useGetUserByEmail();
   const { orderItems, loadingOrderItems, errorOrderItems } = useGetOrderItems();
-const {cart , loadingCart, errorCart} = useGetCart()
+  const { cart, loadingCart, errorCart } = useGetCart()
   return (
     <>
       <Routes>
@@ -38,6 +38,7 @@ const {cart , loadingCart, errorCart} = useGetCart()
               loadingProducts={loadingProducts}
               errorProducts={errorProducts}
               wishlist={wishlist}
+              orderItems={orderItems}
             />
           }
         />
@@ -62,8 +63,8 @@ const {cart , loadingCart, errorCart} = useGetCart()
               errorOrderItems={errorOrderItems}
               address={address}
               user={user}
-              cart= {cart}
-              
+              cart={cart}
+
             />
           }
         />
@@ -71,9 +72,6 @@ const {cart , loadingCart, errorCart} = useGetCart()
           path="/wishlist"
           element={
             <Wishlist
-              wishlist={wishlist}
-              loadingWishlist={loadingWishlist}
-              errorWishlist={errorWishlist}
             />
           }
         />
@@ -104,8 +102,8 @@ const {cart , loadingCart, errorCart} = useGetCart()
             <Login />
           }
         />
-        <Route path="/userProfile"  element={<UsersProfile user={user} loadingUser={loadingUser} errorUser={errorUser} />} />
-        <Route path="/checkout"  element={<Checkout/>} />
+        <Route path="/userProfile" element={<UsersProfile user={user} loadingUser={loadingUser} errorUser={errorUser} />} />
+        <Route path="/checkout" element={<Checkout />} />
       </Routes>
     </>
   );

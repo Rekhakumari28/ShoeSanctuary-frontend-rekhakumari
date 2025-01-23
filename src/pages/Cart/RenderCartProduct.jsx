@@ -1,8 +1,8 @@
 import React from "react";
 import toast, { Toaster } from "react-hot-toast";
 
-const RenderCartProduct = ({ orderItems, products }) => {
-
+const RenderCartProduct = ({ orderItems }) => {
+console.log(orderItems)
   //add Quantity
   const addQuantity = async (productId, product) => {
     const productsId = productId;
@@ -128,9 +128,7 @@ const RenderCartProduct = ({ orderItems, products }) => {
       if (data) {
         toast.success("Move product from the cart to the wishlist");
         handleRemoveFromCart(productId)
-        window.location.reload()
       }
-
     } catch (error) {
       console.log("Error: ", error);
     }
@@ -152,20 +150,24 @@ const RenderCartProduct = ({ orderItems, products }) => {
                   src={product.product.images}
                   alt={product.product.title}
                 />  </div>
-              <button className="btn btn-outline-secondary mt-2" onClick={() => handleRemoveFromCart(product._id)}>Remove From Cart</button>
+              
             </div>
             <div className="col-md-8  ">
               <div className="mx-2">
                 <h4>{product.product.title}</h4>
-                <p>Price: ${product.product.price}</p>
+                <p>Price: ₹{product.product.price}</p>
+                <p>Discount: {product.product.discount}% </p>
                 <p>Rating: {product.product.rating}</p>
-                <p>Quantity: <button className="rounded-circle" onClick={() => addQuantity(product._id, product)}>+</button> {" "}
+                <p>Quantity: <button className="rounded-circle btn btn-outline-secondary" onClick={() => addQuantity(product._id, product)}>+</button> {" "}
                   <span>{product.quantity}</span>  {" "}
-                  <button className="rounded-circle" onClick={() => removeQuantity(product._id, product)}>-</button></p>
-
-              </div>
-              <button className="btn btn-outline-secondary mx-3 " onClick={() => handleMoveToWishlist(product)}>Move to Wishlist</button>
+                  <button className="rounded-circle btn btn-outline-secondary" onClick={() => removeQuantity(product._id, product)}>-</button></p>
+              </div>             
             </div>
+          </div> 
+          <div className="d-grid gap-2 mt-2">
+            <span><button style={{ width: "250px" }} className="btn btn-outline-danger " onClick={() => handleRemoveFromCart(product._id)}>Remove From Cart</button>
+          <button style={{ width: "250px" }} className="btn btn-outline-secondary " onClick={() => handleMoveToWishlist(product)}>Move to Wishlist</button></span>
+          
           </div>
         </div>
       ))}
