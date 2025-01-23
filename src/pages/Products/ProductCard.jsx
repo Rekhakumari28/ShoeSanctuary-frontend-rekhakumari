@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 
-const ProductCard = ({ product, orderItems }) => {
+const ProductCard = ({ product, wishlist, orderItems }) => {
   const [active, setActive] = useState(false);
   const [current, setCurrent] = useState(false)
 
@@ -11,7 +11,12 @@ const ProductCard = ({ product, orderItems }) => {
 
   //add to wishlist
   const handleAddToWishlist = async (object) => {
-    const productId = object._id
+    const value = object
+    const ifIsAlreadyExist =wishlist?.length>0 && wishlist?.filter(product => product?.product._id === value._id)
+    console.log(ifIsAlreadyExist, "already")
+   if(ifIsAlreadyExist.length > 0){
+toast.error("Product is Already in Wishlist.")
+   }else{
     try {
       const response = await fetch(
         `https://backend-shoesanctuary-major-project.vercel.app/api/wishlists`,
@@ -20,7 +25,7 @@ const ProductCard = ({ product, orderItems }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ product: productId }),
+          body: JSON.stringify({ product: value }),
         }
       );
       if (!response.ok) {
@@ -34,15 +39,20 @@ const ProductCard = ({ product, orderItems }) => {
     } catch (error) {
       toast.error("Error occured while adding product to wishlist. ");
     }
+   }
+    
   };
 
   //remove product from cart
   const removeProductFromWishlist = async (object) => {
-
     const productId = object._id
-    try {
+    const ifIsAlreadyExist =wishlist?.length>0 && wishlist?.filter(product => product?.product._id === productId)
+    console.log(ifIsAlreadyExist, "already")
+    const wishlistId = ifIsAlreadyExist[ifIsAlreadyExist?.length - 1] && ifIsAlreadyExist[ifIsAlreadyExist?.length - 1]._id
+    if(ifIsAlreadyExist.length > 0){
+      try {
       const response = await fetch(
-        `https://backend-shoesanctuary-major-project.vercel.app/api/wishlists/${productId}`,
+        `https://backend-shoesanctuary-major-project.vercel.app/api/wishlists/${wishlistId}`,
         { method: "DELETE" }
       );
       if (!response.ok) {
@@ -55,6 +65,10 @@ const ProductCard = ({ product, orderItems }) => {
     } catch (error) {
       toast.error("An error occured while fetching wishlist products.", error);
     }
+    }else{
+      toast.error("Product is not in wishlist.")
+    }
+    
   };
 
   //add to cart
