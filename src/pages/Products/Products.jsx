@@ -224,7 +224,7 @@ const Products = ({ products, loadingProducts, errorProducts, wishlist, orderIte
               </p>
             ) : (
               handleSearchProductFromNavbar?.map((product) =>                 
-              <ProductCard key={product._id} product={product} wishlist={wishlist} orderItems={orderItems}/> 
+              <ProductCard key={product._id} product={product} orderItems={orderItems}/> 
             ))}
           </div>
         </div>

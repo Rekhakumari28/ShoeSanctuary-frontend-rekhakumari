@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 
-const ProductCard = ({ product, wishlist, orderItems }) => {
+const ProductCard = ({ product, orderItems }) => {
   const [active, setActive] = useState(false);
   const [current, setCurrent] = useState(false)
 
@@ -60,7 +60,7 @@ const ProductCard = ({ product, wishlist, orderItems }) => {
   //add to cart
   const handleAddToCart = async (object) => {
     const value = object
-    const ifIsAlreadyExist = orderItems?.filter(product => product?.product._id === value._id)
+    const ifIsAlreadyExist =orderItems?.length>0 && orderItems?.filter(product => product?.product._id === value._id)
    console.log(ifIsAlreadyExist, "already")
     const orderItemId = ifIsAlreadyExist[ifIsAlreadyExist?.length - 1] && ifIsAlreadyExist[ifIsAlreadyExist?.length - 1]._id
     let quantity = ifIsAlreadyExist[ifIsAlreadyExist?.length - 1] && ifIsAlreadyExist[ifIsAlreadyExist?.length - 1]?.quantity
