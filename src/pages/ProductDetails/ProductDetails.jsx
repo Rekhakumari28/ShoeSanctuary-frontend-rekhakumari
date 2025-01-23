@@ -3,10 +3,14 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { useParams, Link, useNavigate} from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-
-const ProductDetails = ({ products, loadingProducts, errorProducts, wishlist }) => {
+import { useGetOrderItems, useGetWishlist } from "../../components/FatchingData";
+const ProductDetails = ({ products, loadingProducts, errorProducts}) => {
   const [active, setActive] = useState(false);
   const [current, setCurrent] = useState(false)
+
+  const {orderItems} = useGetOrderItems()
+  const {wishlist, loadingWishlist} = useGetWishlist()
+
   const navigate = useNavigate()
   const productId = useParams();
 
@@ -15,12 +19,15 @@ const ProductDetails = ({ products, loadingProducts, errorProducts, wishlist }) 
   const similerProduct = products?.filter(
     (product) => product.category?.category === productData?.category?.category
   );
- 
-  const wishlistProductId = wishlist?.lenght > 0 && wishlist[wishlist?.length - 1]
- 
+  
   //add to wishlist
   const handleAddToWishlist = async (object) => {
-    const value = object;
+    const value = object
+    const ifIsAlreadyExist =wishlist?.length>0 && wishlist?.filter(product => product?.product._id === value._id)
+    console.log(ifIsAlreadyExist, "already")
+   if(ifIsAlreadyExist?.length > 0){
+    toast.error("Product is Already in Wishlist.")
+   }else{
     try {
       const response = await fetch(
         `https://backend-shoesanctuary-major-project.vercel.app/api/wishlists`,
@@ -37,21 +44,27 @@ const ProductDetails = ({ products, loadingProducts, errorProducts, wishlist }) 
       }
       const data = await response.json();
       if (data) {
-        console.log(data);
+        loadingWishlist
         toast.success("Product is added to the wishlist.");
-       
       }
     } catch (error) {
       toast.error("Error occured while adding product to wishlist. ");
     }
+   }
+    
   };
 
   //remove product from cart
-  const removeProductFromCart = async (productId) => {
-
-    try {
+  const removeProductFromWishlist = async (object) => {
+    const productId = object._id
+    const ifIsAlreadyExist =wishlist?.length>0 && wishlist?.filter(product => product?.product._id === productId)
+    console.log(ifIsAlreadyExist, "already")
+    const wishlistId = ifIsAlreadyExist[ifIsAlreadyExist?.length - 1] && ifIsAlreadyExist[ifIsAlreadyExist?.length - 1]._id
+    console.log(wishlistId)
+    if(ifIsAlreadyExist?.length > 0){
+      try {
       const response = await fetch(
-        `https://backend-shoesanctuary-major-project.vercel.app/api/wishlists/${productId}`,
+        `https://backend-shoesanctuary-major-project.vercel.app/api/wishlists/${wishlistId}`,
         { method: "DELETE" }
       );
       if (!response.ok) {
@@ -59,41 +72,75 @@ const ProductDetails = ({ products, loadingProducts, errorProducts, wishlist }) 
       }
       const data = await response.json();
       if (data) {
-
         toast.success("Product removed from wishlist Successfully.");
       }
     } catch (error) {
       toast.error("An error occured while fetching wishlist products.", error);
     }
+    }else{
+      toast.error("Product is not in wishlist.")
+    }
+    
   };
 
   //add to cart
   const handleAddToCart = async (object) => {
-    const value = object;
-    try {
-      const response = await fetch(
-        `https://backend-shoesanctuary-major-project.vercel.app/api/orderItems`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ product: value }),
-        }
-      );
-      if (!response.ok) {
-        throw "Failed to add product to cart.";
-      }
-      const data = await response.json();
-      if (data) {
-        toast.success("Product is added to the cart");
-       
-      }
-    } catch (error) {
-      toast.error("Error: ", error);
-    }
-  };
+    const value = object
+    const ifIsAlreadyExist =orderItems?.length>0 && orderItems?.filter(product => product?.product._id === value._id)
+   console.log(ifIsAlreadyExist, "already")
+    const orderItemId = ifIsAlreadyExist[ifIsAlreadyExist?.length - 1] && ifIsAlreadyExist[ifIsAlreadyExist?.length - 1]._id
+    let quantity = ifIsAlreadyExist[ifIsAlreadyExist?.length - 1] && ifIsAlreadyExist[ifIsAlreadyExist?.length - 1]?.quantity
 
+    
+    if (ifIsAlreadyExist?.length > 0) {
+      try {
+        const response = await fetch(
+          `https://backend-shoesanctuary-major-project.vercel.app/api/orderItems/${orderItemId}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ product: value, quantity: quantity + 1 }),
+          }
+        );
+        if (!response.ok) {
+          throw "Failed to add quantity to orderItem.";
+        }
+        const data = await response.json();
+        if (data) {
+          console.log("Quantity added", data);
+          toast.success("Item is already in the cart. Quantity increases.")
+        }
+
+      } catch (error) {
+        toast.error("Error: ", error);
+      }
+    } else {
+      try {
+        const response = await fetch(
+          `https://backend-shoesanctuary-major-project.vercel.app/api/orderItems`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ product: value }),
+          }
+        );
+        if (!response.ok) {
+          throw "Failed to add product to cart.";
+        }
+        const data = await response.json();
+        if (data) {
+          toast.success("Product is Added to cart");
+        }
+      } catch (error) {
+        toast.error("An error occured while fetching products. ", error);
+      }
+    }
+
+  };
 
   return (
     <div>
@@ -149,7 +196,7 @@ const ProductDetails = ({ products, loadingProducts, errorProducts, wishlist }) 
           </button>{" "}
           <button isActive={active}
             onClick={() => {
-              setActive(!active); { !active ? handleAddToWishlist(productData) : removeProductFromCart(wishlistProductId._id) }
+              setActive(!active); { !active ? handleAddToWishlist(productData) : removeProductFromWishlist(productData) }
               ;
             }}
             className="btn btn-outline-primary"
@@ -166,8 +213,8 @@ const ProductDetails = ({ products, loadingProducts, errorProducts, wishlist }) 
                 <h4>{productData?.title}</h4>
                 <p>Rating: {productData?.rating}</p>
                 <p>Price: ₹{productData?.price}</p>
-                <p>Discount: {productData.discount}%</p>
-                <p>Size: {productData.size.join(", ")}</p>
+                <p>Discount: {productData?.discount}%</p>
+                <p>Size: {productData?.size.join(", ")}</p>
                 <p>Category: {productData?.category?.category}</p>
                 <p>Description: {productData?.description}</p>
               </div>

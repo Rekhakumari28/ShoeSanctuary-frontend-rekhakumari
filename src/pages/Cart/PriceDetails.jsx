@@ -4,8 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import AddAddressComponent from "../Address/AddAddressComponent";
 
 
-
-
 const handleRemoveOrderItems = async(orderItemId) =>{
   try {
     const response = await fetch(
@@ -67,9 +65,8 @@ const navigate = useNavigate()
       .toFixed(2);
 
   const deliveryCharges = orderAmount > 2000 ? 0 : 100;
-
-  const afterDiscountTotalAmount = orderAmount - totalOrderDiscount;
-  const totalSavedAmount = parseInt(totalOrderDiscount) + parseInt(deliveryCharges);
+  const afterDiscountTotalAmount = orderAmount - totalOrderDiscount+ deliveryCharges
+  const totalSavedAmount = parseInt(totalOrderDiscount) + (orderAmount > 2000 ? 100 : 0);
 
 const cartId = cart?.length > 0 && cart[cart?.length-1]._id 
 const userId = user?.length > 0 && user[user?.length -1]._id
@@ -124,15 +121,13 @@ const handleRemoveCart = async (cartId) =>{
         setOrderPlaced(true);
          console.log("Order Placed", data);
          toast.success("Order Placed Successfully.")
-         handleRemoveCart(cartId) 
-                       
+         handleRemoveCart(cartId)                        
       }
     } catch (error) {
       console.log("Error: ", error);
       toast.error("An error occured while placing order.")
     }
   };
-
 
   return (
     <div className="card bg-body-tertiary border-0">
@@ -157,7 +152,7 @@ const handleRemoveCart = async (cartId) =>{
           <p>
             <span>Delivery Charges:</span>
             <span className="float-end">
-              {deliveryCharges > 0 ? deliveryCharges : "Free Delivery"}
+              {deliveryCharges > 0 ? ("₹"+{deliveryCharges}) : "Free Delivery"}
             </span>
           </p>
           <hr />

@@ -2,7 +2,7 @@ import React from "react";
 import toast, { Toaster } from "react-hot-toast";
 
 const RenderCartProduct = ({ orderItems }) => {
-console.log(orderItems)
+
   //add Quantity
   const addQuantity = async (productId, product) => {
     const productsId = productId;

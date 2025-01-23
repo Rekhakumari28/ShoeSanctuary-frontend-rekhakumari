@@ -4,13 +4,15 @@ import Footer from "../../components/Footer";
 import { useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductCard from "./ProductCard";
-
-const Products = ({ products, loadingProducts, errorProducts, wishlist, orderItems }) => {
-
+import { useGetOrderItems, useGetWishlist } from "../../components/FatchingData";
+const Products = ({ products, loadingProducts, errorProducts }) => {
   const [filterByCategory, setFilterByCategory] = useState([]);
   const [filterByRating, setFilterByRating] = useState(0);
   const [filterByPrice, setFilterByPrice] = useState("");
   const [searchProduct, setSearchProduct] = useState("");
+
+  const {orderItems} = useGetOrderItems()
+  const {wishlist} = useGetWishlist()
 
   const ref = useRef([]);
   const refPrice1 = useRef([null]);

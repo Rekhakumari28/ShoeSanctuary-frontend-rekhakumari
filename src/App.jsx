@@ -37,8 +37,7 @@ function App() {
               products={products}
               loadingProducts={loadingProducts}
               errorProducts={errorProducts}
-              wishlist={wishlist}
-              orderItems={orderItems}
+             
             />
           }
         />
@@ -49,7 +48,7 @@ function App() {
               products={products}
               loadingProducts={loadingProducts}
               errorProducts={errorProducts}
-              wishlist={wishlist}
+
             />
           }
         />
