@@ -110,7 +110,7 @@ const RenderWishlistProduct = ({ wishlist, orderItems }) => {
                 <h5>{product?.product.title}</h5>
                 <span>Price: ₹{product.product.price}</span> {"| "}
                 <span>Rating: {product.product.rating}</span>
-                <p>Discount: {product.product.discount} </p>
+                <p>Discount: {product.product.discount}% </p>
                 <button
                   className="btn btn-outline-primary "
                   onClick={() => handleMoveToCart(product)}
