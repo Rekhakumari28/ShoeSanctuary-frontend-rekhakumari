@@ -64,7 +64,7 @@ const navigate = useNavigate()
       .reduce((acc, curr) => acc + curr, 0)
       .toFixed(2);
 
-  const deliveryCharges = orderAmount > 2000 ? 0 : 100;
+  const deliveryCharges = orderAmount > 1000 ? 0 : 100;
   const afterDiscountTotalAmount = orderAmount - totalOrderDiscount+ deliveryCharges
   const totalSavedAmount = parseInt(totalOrderDiscount) + (orderAmount > 2000 ? 100 : 0);
 
@@ -152,7 +152,7 @@ const handleRemoveCart = async (cartId) =>{
           <p>
             <span>Delivery Charges:</span>
             <span className="float-end">
-              {deliveryCharges > 0 ? ("₹"+{deliveryCharges}) : "Free Delivery"}
+              {deliveryCharges > 0 ? ("₹"+deliveryCharges) : "Free Delivery"}
             </span>
           </p>
           <hr />
