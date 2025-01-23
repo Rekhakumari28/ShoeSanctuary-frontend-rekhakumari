@@ -30,7 +30,7 @@ const ProductsSlider = () => {
         )}
           <Slider {...settings}>      
             {products && products?.map((product) => (
-              <div className="col-md-3" key={product._id}>
+              <div className="col-md-3 mx-2" key={product._id}>
                 <Link to={`/productDetails/${product._id}`}>
                   <div className="card text-center border-0">
                     <img
@@ -40,7 +40,7 @@ const ProductsSlider = () => {
                       alt={product.title}
                     />
                   </div>
-                  <p>{product.title}</p>
+                  <span>{product.title.substring(0, 20)}</span>
                 </Link>
               </div>
             ))}
