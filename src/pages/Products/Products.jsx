@@ -134,7 +134,7 @@ const Products = ({ products, loadingProducts, errorProducts }) => {
             <label className="my-2">
               <input
                 ref={(element) => {
-                  ref.current[3] = element;
+                  ref.current[2] = element;
                 }}
                 type="checkbox"
                 name="category"
