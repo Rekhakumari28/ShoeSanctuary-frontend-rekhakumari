@@ -17,15 +17,13 @@ import {
   useGetCart
 } from "./components/FatchingData";
 
-
-
 function App() {
-  const { wishlist, loadingWishlist, errorWishlist } = useGetWishlist();
+  const { wishlist} = useGetWishlist();
   const { products, loadingProducts, errorProducts } = useGetProducts();
   const { address, loadingAddress, errorAddress } = useGetAddress();
   const { user, loadingUser, errorUser } = useGetUserByEmail();
   const { orderItems, loadingOrderItems, errorOrderItems } = useGetOrderItems();
-  const { cart, loadingCart, errorCart } = useGetCart()
+  const { cart} = useGetCart()
   return (
     <>
       <Routes>
@@ -36,8 +34,7 @@ function App() {
             <Products
               products={products}
               loadingProducts={loadingProducts}
-              errorProducts={errorProducts}
-             
+              errorProducts={errorProducts}             
             />
           }
         />
@@ -48,7 +45,6 @@ function App() {
               products={products}
               loadingProducts={loadingProducts}
               errorProducts={errorProducts}
-
             />
           }
         />
@@ -63,16 +59,12 @@ function App() {
               address={address}
               user={user}
               cart={cart}
-
             />
           }
         />
         <Route
           path="/wishlist"
-          element={
-            <Wishlist
-            />
-          }
+          element={<Wishlist />}
         />
         <Route
           path="/products/:productCategory"

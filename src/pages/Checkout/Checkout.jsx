@@ -29,6 +29,9 @@ const Checkout = () => {
 
         </div>
       </div>
+      <br/>     
+        <br/>     
+        <br/> 
       <Footer />
     </div>
   )

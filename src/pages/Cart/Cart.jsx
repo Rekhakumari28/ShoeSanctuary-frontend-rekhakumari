@@ -50,7 +50,9 @@ const Cart = ({
           </p>
         )}
       </div>
-
+      <br/>     
+        <br/>     
+        
       <Footer />
     </div>
   );

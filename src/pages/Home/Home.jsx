@@ -11,7 +11,10 @@ function Home() {
         <ImageSlide/>
         <Category/>
         <ProductsSlide/> 
-        </div>       
+        </div> 
+        <br/>     
+        <br/>     
+        <br/>       
         <Footer/>
     </div>
   )

@@ -35,6 +35,9 @@ const { orderItems } = useGetOrderItems()
           </p>
         )}
       </div>
+      <br/>     
+        <br/>     
+        <br/> 
       <Footer />
     </div>
   );

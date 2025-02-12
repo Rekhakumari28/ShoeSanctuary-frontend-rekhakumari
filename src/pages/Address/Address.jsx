@@ -34,6 +34,9 @@ function Address({ address, loadingAddress, errorAddress }) {
           </p>
         )}
       </div>
+      <br/>     
+        <br/>     
+        <br/> 
       <Footer />
     </div>
   );

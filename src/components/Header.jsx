@@ -20,7 +20,7 @@ const Header = (props) => {
             <Link to="/" className="navbar-brand">
               <h1 id="brandName">ShoeSanctuary</h1>
               <small className="fs-6">
-                Socially & Environmentally Prograsive
+                Socially & Environmentally Progressive 
               </small>
             </Link>
 

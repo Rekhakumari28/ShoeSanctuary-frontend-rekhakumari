@@ -25,7 +25,8 @@ const UsersProfile = ({user}) => {
           
         </div>
     </div>
-   
+    <br/>     
+        
     <Footer/>
   </div>
   )
