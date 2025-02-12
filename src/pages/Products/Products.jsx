@@ -231,7 +231,7 @@ const Products = ({ products, loadingProducts, errorProducts }) => {
         </div>
       </div>
       </div>
-   
+   <br />
       <Footer />
     </div>
   );

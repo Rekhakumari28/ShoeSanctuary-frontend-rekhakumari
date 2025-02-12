@@ -276,6 +276,8 @@ const ProductDetails = ({ products, loadingProducts, errorProducts}) => {
           </div>
         </div>
       </div>
+      <br/>     
+        <br/> 
       <Footer />
       <Toaster position="top-center" reverseOrder={false} />
     </div>
