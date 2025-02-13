@@ -8,7 +8,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setphone] = useState("");
-
+const [profileImage,setProfileImage] = useState("")
 
   const handleEmailInput = (event) => {
     let emailId = event.target.value;
@@ -38,6 +38,7 @@ const Login = () => {
               email: email,
               password: password,
               phone: phone,
+              profileImage: profileImage
             }),
           }
         );
@@ -53,6 +54,7 @@ const Login = () => {
         setEmail("");
         setPassword("");
         setphone("");
+        setProfileImage("")
         window.location.reload()
         }
         
@@ -115,13 +117,25 @@ const Login = () => {
             />
             <label htmlFor="password">Phone Number:</label>
           </div>
+          <div className="form-floating mb-3">
+            <input
+              type="text"
+              className="form-control"
+              id="profileImage."
+              placeholder="profile Image"
+              value={profileImage}
+              onChange={(event) => setProfileImage(event.target.value)}
+            />
+            <label htmlFor="profileImage">Profile Image Link:</label> 
+          </div>
           <div className="notificationContainer">
-            <button className="btn btn-primary my-3" type="submit">
+            <button className="btn btn-primary my-2" type="submit">
               Login
             </button>
           </div>
         </form>
       </div>
+      <br /><br />
       <Footer/>
       <Toaster position="top-center" reverseOrder={false} />
     </div>

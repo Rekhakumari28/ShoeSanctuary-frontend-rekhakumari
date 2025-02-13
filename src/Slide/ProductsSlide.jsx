@@ -32,7 +32,7 @@ const ProductsSlider = () => {
             {products && products?.map((product) => (
               <div className="col-md-3 mx-2" key={product._id}>
                 <Link to={`/productDetails/${product._id}`} className="link-offset-2 link-offset-2-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover text-black" >
-                  <div className="card text-center border-0">
+                   <div className="card text-center border-0">
                     <img
                       style={{ height: "150px", width: "150px" }}
                       className="img-fluid rounded "

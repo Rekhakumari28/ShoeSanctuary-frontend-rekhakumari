@@ -1,10 +1,14 @@
 import React from 'react'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
-
-const UsersProfile = ({user}) => {
+import useFetch from '../../useFetch'
+const UsersProfile = ({user }) => {
    
     const userProfile = user?.length > 0 && user[user?.length -1]
+    console.log(userProfile)
+    const userId = userProfile?._id
+    const {data} = useFetch(`https://backend-shoesanctuary-major-project.vercel.app/api/carts/${userId}`)
+console.log(data)
 
   return (
     <div>
@@ -12,21 +16,28 @@ const UsersProfile = ({user}) => {
     
     <div className="container px-4  py-3">
       <h2>Your Profile</h2>
-      <div className="row text-center">
-          
-            <div className='card'>
-              <div className='card-body bg-body-tertiary'>
-              <span>{userProfile?.username}</span> {" "} | {" "} 
-                <span>Email: {userProfile?.email}</span> {" "} | {" "} 
+      <div className="row ">          
+            <div className='card bg-body-tertiary'>
+              <div className='row'>
+                <div className='col-md-6 text-center'>
+                <img src={userProfile?.profileImage} alt={userProfile?.username} />
+                </div>               
+                <div className='col-md-6 card-body'>
+                <h2>{userProfile?.username}</h2> 
+                <span>Email: {userProfile?.email}</span> {" "} {" | "}  {" "}
                 <span>Phone: {userProfile?.phone}</span>
-              </div>
               
-            </div>
-          
+                <div className='my-2 bg-white'>
+                  <h4>Order History</h4>
+                  <p>{}</p>
+                </div>
+                </div>             
+              </div>              
+            </div>          
         </div>
     </div>
     <br/>     
-        
+       <br /> 
     <Footer/>
   </div>
   )

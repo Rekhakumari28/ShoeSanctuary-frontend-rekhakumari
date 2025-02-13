@@ -43,7 +43,7 @@ const handleRemoveAddress = async (addressId) =>{
 const PriceDetails = ({ orderItems, address, user, cart }) => {
   const [selectedAddress, setSelectedAddress] = useState();
   const [orderPlaced, setOrderPlaced] = useState(false);
-const navigate = useNavigate()
+  const navigate = useNavigate()
 
   const orderAmount =
     orderItems.length > 0 &&
@@ -90,12 +90,14 @@ const handleRemoveCart = async (cartId) =>{
   }
 }
 
+let orderItemArray = []
+for(let product of orderItems){
+  orderItemArray.push(product._id)
+}
+console.log(orderItemArray)
+
   const handlePlaceOrder = async (data) => {
-    let orderItemArray = []
-    for(let product of data){
-      orderItemArray.push(product._id)
-    }
-    console.log(orderItemArray)
+   
     // const orderItem = data?.map((object) => object._id);
     const selectedAddressId = selectedAddress._id;
     
@@ -197,7 +199,8 @@ const handleRemoveCart = async (cartId) =>{
             <button
               className="btn btn-primary"
               onClick={() => {handlePlaceOrder(orderItems);
-                  ;orderItems?.map(order=>handleRemoveOrderItems (order._id))  ; navigate("/checkout") 
+                  orderItems?.map(order=>handleRemoveOrderItems (order._id))  ;
+                   navigate("/checkout") 
                 }}
             >
               Checkout

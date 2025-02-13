@@ -150,7 +150,7 @@ const RenderCartProduct = ({ orderItems }) => {
                   src={product.product.images}
                   alt={product.product.title}
                 />  </div>
-              
+
             </div>
             <div className="col-md-8  ">
               <div className="mx-2">
@@ -158,16 +158,17 @@ const RenderCartProduct = ({ orderItems }) => {
                 <p>Price: ₹{product.product.price}</p>
                 <p>Discount: {product.product.discount}% </p>
                 <p>Rating: {product.product.rating}</p>
-                <p>Quantity: <button className="rounded-circle btn btn-outline-secondary" onClick={() => addQuantity(product._id, product)}>+</button> {" "}
+                <p>Quantity: <button className="rounded-circle btn btn-outline-secondary" onClick={() => removeQuantity(product._id, product)}>-</button> {" "}
                   <span>{product.quantity}</span>  {" "}
-                  <button className="rounded-circle btn btn-outline-secondary" onClick={() => removeQuantity(product._id, product)}>-</button></p>
-              </div>             
+                  <button className="rounded-circle btn btn-outline-secondary" onClick={() => addQuantity(product._id, product)}>+</button>
+                  </p>
+              </div>
             </div>
-          </div> 
+          </div>
           <div className="d-grid gap-2 mt-2">
             <span><button style={{ width: "250px" }} className="btn btn-outline-danger " onClick={() => handleRemoveFromCart(product._id)}>Remove From Cart</button>
-          <button style={{ width: "250px" }} className="btn btn-outline-secondary " onClick={() => handleMoveToWishlist(product)}>Move to Wishlist</button></span>
-          
+              <button style={{ width: "250px" }} className="btn btn-outline-secondary " onClick={() => handleMoveToWishlist(product)}>Move to Wishlist</button></span>
+
           </div>
         </div>
       ))}
