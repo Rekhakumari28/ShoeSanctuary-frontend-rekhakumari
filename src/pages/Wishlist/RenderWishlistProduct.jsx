@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
 export const reloadWishlistPage = () => {
@@ -6,9 +6,8 @@ export const reloadWishlistPage = () => {
 }
 
 const RenderWishlistProduct = ({ wishlist, orderItems }) => {
-
-  console.log(wishlist, "wishlist")
-  console.log(orderItems, "orderItems")
+  const [productSize, setProductSize] = useState("")
+ 
   //remove from cart
   const handleRemove = async (productId) => {
     try {
@@ -90,6 +89,32 @@ const RenderWishlistProduct = ({ wishlist, orderItems }) => {
 
   };
 
+  const handleSizeChange =async (object)=>{
+   
+    const productId = object._id
+   try {
+    const response = await fetch(
+      `https://backend-shoesanctuary-major-project.vercel.app/api/products/${productId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...object, size: productSize  }),
+      })
+      if (!response.ok) {
+        throw "Failed to add size to product.";
+      }
+      const data = await response.json();
+      if (data) {
+        console.log("Size is added", data);
+       
+      }
+   } catch (error) {
+    toast.error("An error occured while selecting size. ", error);
+   }
+  }
+
   return (
     <div className="list-group ">
       {wishlist &&
@@ -109,11 +134,21 @@ const RenderWishlistProduct = ({ wishlist, orderItems }) => {
               <div className="col-md-7">
                 <h5>{product?.product.title}</h5>
                 <span>Price: ₹{product.product.price}</span> {"| "}
-                <span>Rating: {product.product.rating}</span>
+                <span>Rating: {product.product.rating}</span> <br/>
+                <label>Select Shoes Size:</label>{" "}
+                <select  name="size" className="btn text-bg-light p-1"  onChange={(event)=>setProductSize(event.target.value)}>
+              <option>Select</option>
+              <option value="XS">XS</option>
+              <option value="S" >S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+              </select>
                 <p>Discount: {product.product.discount}% </p>
                 <button
-                  className="btn btn-outline-primary "
-                  onClick={() => handleMoveToCart(product)}
+                  className="btn btn-outline-primary " disabled = {productSize === "" ? true : false}
+                  
+                  onClick={() =>{ handleMoveToCart(product) ;  handleSizeChange(product.product)} }
                 >
                   Move to Cart
                 </button>

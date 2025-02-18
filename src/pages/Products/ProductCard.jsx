@@ -9,13 +9,13 @@ const ProductCard = ({ product, wishlist, orderItems }) => {
   const { images, title, rating, price } = product;
   const navigate = useNavigate()
 
+
   //add to wishlist
   const handleAddToWishlist = async (object) => {
     const value = object
     const ifIsAlreadyExist =wishlist?.length>0 && wishlist?.filter(product => product?.product._id === value._id)
-    console.log(ifIsAlreadyExist, "already")
    if(ifIsAlreadyExist.length > 0){
-toast.error("Product is Already in Wishlist.")
+    toast.error("Product is Already in Wishlist.")
    }else{
     try {
       const response = await fetch(
@@ -33,7 +33,6 @@ toast.error("Product is Already in Wishlist.")
       }
       const data = await response.json();
       if (data) {
-
         toast.success("Product is added to the wishlist.");
       }
     } catch (error) {
@@ -47,7 +46,7 @@ toast.error("Product is Already in Wishlist.")
   const removeProductFromWishlist = async (object) => {
     const productId = object._id
     const ifIsAlreadyExist =wishlist?.length>0 && wishlist?.filter(product => product?.product._id === productId)
-    console.log(ifIsAlreadyExist, "already")
+    
     const wishlistId = ifIsAlreadyExist[ifIsAlreadyExist?.length - 1] && ifIsAlreadyExist[ifIsAlreadyExist?.length - 1]._id
     if(ifIsAlreadyExist.length > 0){
       try {
@@ -75,7 +74,7 @@ toast.error("Product is Already in Wishlist.")
   const handleAddToCart = async (object) => {
     const value = object
     const ifIsAlreadyExist =orderItems?.length>0 && orderItems?.filter(product => product?.product._id === value._id)
-   console.log(ifIsAlreadyExist, "already")
+  
     const orderItemId = ifIsAlreadyExist[ifIsAlreadyExist?.length - 1] && ifIsAlreadyExist[ifIsAlreadyExist?.length - 1]._id
     let quantity = ifIsAlreadyExist[ifIsAlreadyExist?.length - 1] && ifIsAlreadyExist[ifIsAlreadyExist?.length - 1]?.quantity
 
@@ -130,6 +129,33 @@ toast.error("Product is Already in Wishlist.")
 
   };
 
+  //change size
+  const handleSizeChange =async (object)=>{
+   
+    const productId = object._id
+   try {
+    const response = await fetch(
+      `https://backend-shoesanctuary-major-project.vercel.app/api/products/${productId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...object, size: "M"  }),
+      })
+      if (!response.ok) {
+        throw "Failed to add size to product.";
+      }
+      const data = await response.json();
+      if (data) {
+        console.log("Size is added", data);
+       
+      }
+   } catch (error) {
+    toast.error("An error occured while selecting size. ", error);
+   }
+  }
+
   return (
     <div className="col-md-3 p-2">
       <div>
@@ -169,8 +195,9 @@ toast.error("Product is Already in Wishlist.")
             </span>
             <br />
             <span >
-              <span className="fw-bold">Price:</span> ₹{price}
+              <span className="fw-bold">Price:</span> ₹{price} 
             </span>{" "}
+          
             <br />
           </div>
         </div>
@@ -178,7 +205,7 @@ toast.error("Product is Already in Wishlist.")
           <button
             className="btn btn-primary"
             onClick={() => {
-              setCurrent(!current); { !current ? handleAddToCart(product) : navigate("/cart") }
+              setCurrent(!current); { !current ? handleAddToCart(product) : navigate("/cart") } ; handleSizeChange(product)
             }}
           >{!current ? "Add to Cart" : "Go To Cart"}
 

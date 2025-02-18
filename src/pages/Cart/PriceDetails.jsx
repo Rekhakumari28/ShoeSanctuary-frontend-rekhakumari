@@ -3,8 +3,8 @@ import toast, { Toaster } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import AddAddressComponent from "../Address/AddAddressComponent";
 
-
 const handleRemoveOrderItems = async(orderItemId) =>{
+  
   try {
     const response = await fetch(
       `https://backend-shoesanctuary-major-project.vercel.app/api/orderItems/${orderItemId}`,
@@ -42,7 +42,7 @@ const handleRemoveAddress = async (addressId) =>{
 
 const PriceDetails = ({ orderItems, address, user, cart }) => {
   const [selectedAddress, setSelectedAddress] = useState();
-  const [orderPlaced, setOrderPlaced] = useState(false);
+ 
   const navigate = useNavigate()
 
   const orderAmount =
@@ -89,18 +89,9 @@ const handleRemoveCart = async (cartId) =>{
     toast.error("An error occured while removing item from cart.");
   }
 }
-
-let orderItemArray = []
-for(let product of orderItems){
-  orderItemArray.push(product._id)
-}
-console.log(orderItemArray)
-
   const handlePlaceOrder = async (data) => {
-   
-    // const orderItem = data?.map((object) => object._id);
-    const selectedAddressId = selectedAddress._id;
-    
+    const orderItemProduct = [...data]    
+    const selectedAddressId = selectedAddress._id;    
     try {
       const response = await fetch(
         "https://backend-shoesanctuary-major-project.vercel.app/api/carts",
@@ -110,9 +101,8 @@ console.log(orderItemArray)
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            orderItem: orderItemArray,
+            orderItems: orderItemProduct,
             shippingAddress: selectedAddressId,
-            status: "Pending",
             totalPrice: afterDiscountTotalAmount,
             user: userId,
           }),
@@ -124,21 +114,49 @@ console.log(orderItemArray)
       }
       const data = await response.json();
       if (data) {
-        window.location.reload()
-        setOrderPlaced(true);
          console.log("Order Placed", data);
          toast.success("Order Placed Successfully.")
-         handleRemoveCart(cartId)                        
+         handleRemoveCart(cartId)  
+         orderItems?.map(order=>handleRemoveOrderItems (order._id))                      
       }
     } catch (error) {
       console.log("Error: ", error);
       toast.error("An error occured while placing order.")
     }
   };
+  
+  const handleAddToCartHistory = async (data)=>{
+    const orderItemProduct = [...data]
+
+      const selectedAddressId  = selectedAddress._id
+      try {
+        const response = await fetch("https://backend-shoesanctuary-major-project.vercel.app/api/cartHistory",{
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify( {
+            orderItems:  orderItemProduct,
+            shippingAddress: selectedAddressId,
+            totalPrice: afterDiscountTotalAmount,
+            user: userId,
+          })
+        })
+        if (!response.ok) {
+          throw "Failed to add product.";
+        }
+        const data = await response.json();
+        if (data) {         
+           console.log("Order Placed and added in the order History", data);                    
+        }
+      } catch (error) {
+        console.log("Error: ", error);
+      }
+  }
 
   return (
     <div className="card bg-body-tertiary border-0">
-      {orderPlaced && <Link to="/products">Continue Shopping</Link>}
+      
       {orderItems && orderItems.length > 0 && (
         <div className="card-body d-grid">
           <h4>Price Details</h4>
@@ -199,7 +217,7 @@ console.log(orderItemArray)
             <button
               className="btn btn-primary"
               onClick={() => {handlePlaceOrder(orderItems);
-                  orderItems?.map(order=>handleRemoveOrderItems (order._id))  ;
+                handleAddToCartHistory(orderItems);
                    navigate("/checkout") 
                 }}
             >

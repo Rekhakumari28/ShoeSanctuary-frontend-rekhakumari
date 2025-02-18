@@ -3,6 +3,8 @@ import toast, { Toaster } from "react-hot-toast";
 
 const RenderCartProduct = ({ orderItems }) => {
 
+  console.log(orderItems)
+
   //add Quantity
   const addQuantity = async (productId, product) => {
     const productsId = productId;
@@ -155,9 +157,10 @@ const RenderCartProduct = ({ orderItems }) => {
             <div className="col-md-8  ">
               <div className="mx-2">
                 <h4>{product.product.title}</h4>
-                <p>Price: ₹{product.product.price}</p>
-                <p>Discount: {product.product.discount}% </p>
-                <p>Rating: {product.product.rating}</p>
+                <p className="my-1">Price: ₹{product.product.price}</p>
+                <p className="my-1">Discount: {product.product.discount}% </p>
+                <p className="my-1">Rating: {product.product.rating}</p>
+                <p className="my-1"> Size : {product.product.size}</p>
                 <p>Quantity: <button className="rounded-circle btn btn-outline-secondary" onClick={() => removeQuantity(product._id, product)}>-</button> {" "}
                   <span>{product.quantity}</span>  {" "}
                   <button className="rounded-circle btn btn-outline-secondary" onClick={() => addQuantity(product._id, product)}>+</button>

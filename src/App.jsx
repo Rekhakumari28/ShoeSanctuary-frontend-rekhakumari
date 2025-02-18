@@ -94,7 +94,7 @@ function App() {
           }
         />
         <Route path="/userProfile" element={<UsersProfile user={user} loadingUser={loadingUser} errorUser={errorUser} />} />
-        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/checkout" element={<Checkout/>} />
       </Routes>
     </>
   );

@@ -4,16 +4,17 @@ import Footer from "../../components/Footer";
 import { useParams, Link, useNavigate} from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { useGetOrderItems, useGetWishlist } from "../../components/FatchingData";
+
 const ProductDetails = ({ products, loadingProducts, errorProducts}) => {
   const [active, setActive] = useState(false);
   const [current, setCurrent] = useState(false)
-
+  const [productSize, setProductSize] = useState("")
   const {orderItems} = useGetOrderItems()
   const {wishlist, loadingWishlist} = useGetWishlist()
 
   const navigate = useNavigate()
   const productId = useParams();
-
+  
   const productData = products?.find((prod) => prod._id == productId.productId);
 
   const similerProduct = products?.filter(
@@ -24,7 +25,7 @@ const ProductDetails = ({ products, loadingProducts, errorProducts}) => {
   const handleAddToWishlist = async (object) => {
     const value = object
     const ifIsAlreadyExist =wishlist?.length>0 && wishlist?.filter(product => product?.product._id === value._id)
-    console.log(ifIsAlreadyExist, "already")
+   
    if(ifIsAlreadyExist?.length > 0){
     toast.error("Product is Already in Wishlist.")
    }else{
@@ -58,9 +59,9 @@ const ProductDetails = ({ products, loadingProducts, errorProducts}) => {
   const removeProductFromWishlist = async (object) => {
     const productId = object._id
     const ifIsAlreadyExist =wishlist?.length>0 && wishlist?.filter(product => product?.product._id === productId)
-    console.log(ifIsAlreadyExist, "already")
+    
     const wishlistId = ifIsAlreadyExist[ifIsAlreadyExist?.length - 1] && ifIsAlreadyExist[ifIsAlreadyExist?.length - 1]._id
-    console.log(wishlistId)
+   
     if(ifIsAlreadyExist?.length > 0){
       try {
       const response = await fetch(
@@ -82,15 +83,18 @@ const ProductDetails = ({ products, loadingProducts, errorProducts}) => {
     }
     
   };
+  
 
   //add to cart
   const handleAddToCart = async (object) => {
-    const value = object
+    const value ={ ...object, size: productSize  }
+    console.log(value)
     const ifIsAlreadyExist =orderItems?.length>0 && orderItems?.filter(product => product?.product._id === value._id)
-   console.log(ifIsAlreadyExist, "already")
+  
     const orderItemId = ifIsAlreadyExist[ifIsAlreadyExist?.length - 1] && ifIsAlreadyExist[ifIsAlreadyExist?.length - 1]._id
     let quantity = ifIsAlreadyExist[ifIsAlreadyExist?.length - 1] && ifIsAlreadyExist[ifIsAlreadyExist?.length - 1]?.quantity
 
+    
     
     if (ifIsAlreadyExist?.length > 0) {
       try {
@@ -101,7 +105,7 @@ const ProductDetails = ({ products, loadingProducts, errorProducts}) => {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ product: value, quantity: quantity + 1 }),
+            body: JSON.stringify({ product: { ...object, size: productSize  }, quantity: quantity + 1 }),
           }
         );
         if (!response.ok) {
@@ -125,7 +129,7 @@ const ProductDetails = ({ products, loadingProducts, errorProducts}) => {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ product: value }),
+            body: JSON.stringify({ product: { ...object, size: productSize  } }),
           }
         );
         if (!response.ok) {
@@ -141,6 +145,32 @@ const ProductDetails = ({ products, loadingProducts, errorProducts}) => {
     }
 
   };
+
+const handleSizeChange =async (object)=>{
+  const productId = object._id
+ try {
+  const response = await fetch(
+    `https://backend-shoesanctuary-major-project.vercel.app/api/products/${productId}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ...object, size: productSize  }),
+    })
+    if (!response.ok) {
+      throw "Failed to add size to product.";
+    }
+    const data = await response.json();
+    if (data) {
+      console.log("Size is added", data);
+     
+    }
+ } catch (error) {
+  toast.error("An error occured while selecting size. ", error);
+ }
+}
+
 
   return (
     <div>
@@ -187,9 +217,9 @@ const ProductDetails = ({ products, loadingProducts, errorProducts}) => {
             </div>
              <div className="d-grid gap-2">
           <button
-            className="btn btn-primary"
+            className="btn btn-primary" disabled= { productSize === "" ? true : false} 
             onClick={() => {
-              setCurrent(!current) ; {!current ? handleAddToCart(productData) : navigate("/cart")}
+              setCurrent(!current) ;  {!current ? handleAddToCart(productData) : navigate("/cart")} ;handleSizeChange(productData)
             }}
           >{!current ? "Add to Cart" : "Go To Cart"}
            
@@ -211,10 +241,18 @@ const ProductDetails = ({ products, loadingProducts, errorProducts}) => {
             >
               <div className="card-body">
                 <h4>{productData?.title}</h4>
-                <p>Rating: {productData?.rating}</p>
-                <p>Price: ₹{productData?.price}</p>
-                <p>Discount: {productData?.discount}%</p>
-                <p>Size: {productData?.size.join(", ")}</p>
+                <p className="my-1">Rating: {productData?.rating}</p>
+                <p className="my-1">Price: ₹{productData?.price}</p>
+                <p className="my-1">Discount: {productData?.discount}%</p> 
+                <label>Select Shoes Size:</label>{" "}
+                <select  name="size" className="btn text-bg-light p-2"  onChange={(event)=>setProductSize(event.target.value)}>
+              <option>Select</option>
+              <option value="XS">XS</option>
+              <option value="S" >S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+              </select>
                 <p>Category: {productData?.category?.category}</p>
                 <p>Description: {productData?.description}</p>
               </div>
