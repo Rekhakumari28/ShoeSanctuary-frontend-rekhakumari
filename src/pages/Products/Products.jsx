@@ -40,14 +40,13 @@ const Products = () => {
     }
   };
 
-  let filteredDatas = data?.filter((product) => product.category?.category.includes(productCategory.productCategory));
+  let filteredData = data?.filter((product) => product.category?.category.includes(productCategory.productCategory));
 
-  console.log(filteredDatas, "hello")
-
+  
   const categoryFilter =
     filterByCategory.length === 0
-      ? filteredDatas && filteredDatas.length !== 0
-       ? filteredDatas 
+      ? filteredData && filteredData.length !== 0
+       ? filteredData 
        : data
       : data?.filter((prod) =>
         filterByCategory.includes(prod.category?.category)
@@ -124,7 +123,7 @@ const Products = () => {
                   type="checkbox"
                   name="Men"
                   value="Men"
-                  checked={filterByCategory.includes("Men")}
+                  checked={filterByCategory.length === 0 ? filteredData?.map(prod=>prod.category?.category).includes("Men") : filterByCategory.includes("Men")}
                   onChange={handleCategoryCheckbox}
                 />{" "}
                 Men{" "}
@@ -138,7 +137,7 @@ const Products = () => {
                   type="checkbox"
                   name="Women"
                   value="Women"
-                  checked={filterByCategory.includes("Women")}
+                  checked={filterByCategory.length === 0 ? filteredData?.map(prod=>prod.category?.category).includes("Women") : filterByCategory.includes("Women")}
                   onChange={handleCategoryCheckbox}
                 />{" "}
                 Women{" "}
@@ -152,7 +151,7 @@ const Products = () => {
                   type="checkbox"
                   name="Girls"
                   value="Girls"
-                  checked={filterByCategory.includes("Girls")}
+                  checked={filterByCategory.length === 0 ? filteredData?.map(prod=>prod.category?.category).includes("Girls") : filterByCategory.includes("Girls")}
                   onChange={handleCategoryCheckbox}
                 />{" "}
                 Girls{" "}
@@ -166,7 +165,7 @@ const Products = () => {
                   type="checkbox"
                   name="Boys"
                   value="Boys"
-                  checked={filterByCategory.includes("Boys")}
+                  checked={filterByCategory.length === 0 ? filteredData?.map(prod=>prod.category?.category).includes("Boys") : filterByCategory.includes("Boys")}
                   onChange={handleCategoryCheckbox}
                 />{" "}
                 Boys{" "}
