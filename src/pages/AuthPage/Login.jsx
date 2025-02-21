@@ -82,7 +82,7 @@ const [profileImage,setProfileImage] = useState("")
               value={username}
               onChange={(event) => setUsername(event.target.value)}
             />
-            <label htmlFor="username">Username:</label>
+            <label htmlFor="username">Username: (ex: firstname lastname)</label>
           </div>
           <div className="form-floating mb-3  ">
             <input
@@ -93,7 +93,7 @@ const [profileImage,setProfileImage] = useState("")
            
               onChange={handleEmailInput}
             />
-            <label htmlFor="email">Email: </label>
+            <label htmlFor="email">Email: (ex: example@mail.com)</label>
           </div>
           <div className="form-floating mb-3 ">
             <input
@@ -104,7 +104,7 @@ const [profileImage,setProfileImage] = useState("")
               value={password}
               onChange={(event) => setPassword(event.target.value)}
             />
-            <label htmlFor="password">Password:</label>
+            <label htmlFor="password">Password:(ex: password@123)</label>
           </div>
           <div className="form-floating mb-3">
             <input
@@ -115,7 +115,7 @@ const [profileImage,setProfileImage] = useState("")
               value={phone}
               onChange={(event) => setphone(event.target.value)}
             />
-            <label htmlFor="password">Phone Number:</label>
+            <label htmlFor="password">Phone Number: (ex: +917858582522)</label>
           </div>
           <div className="form-floating mb-3">
             <input
@@ -125,8 +125,9 @@ const [profileImage,setProfileImage] = useState("")
               placeholder="profile Image"
               value={profileImage}
               onChange={(event) => setProfileImage(event.target.value)}
+              
             />
-            <label htmlFor="profileImage">Profile Image Link:</label> 
+            <label htmlFor="profileImage">Profile Image: (ex: https://via.placeholder.com/250x250)</label> 
           </div>
           <div className="notificationContainer">
             <button className="btn btn-primary my-2" type="submit">
