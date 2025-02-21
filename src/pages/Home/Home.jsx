@@ -3,7 +3,8 @@ import Footer from '../../components/Footer'
 import Category from '../../components/Category'
 import ProductsSlide from '../../Slide/ProductsSlide'
 import ImageSlide from '../../Slide/ImageSlide'
-function Home() {   
+
+function Home() { 
   return (
     <div >
         <Header />

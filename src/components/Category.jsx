@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 const Category = () => {
+  
   const categoryImage = [
     {
       id: "1",
@@ -33,7 +34,7 @@ const Category = () => {
       <div className="row ">
         {categoryImage.map((image) => (
           <div className="col-md-3 text-center " key={image.id}>
-          <Link to={`/products/${image.category}`} className="link-offset-2 link-offset-2-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover text-black" >
+          <Link to={`/products/${image.category}`}  className="link-offset-2 link-offset-2-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover text-black" >
               <img
                 style={{ height: "150px", width: "150px" }}
                 className="img-fluid rounded-circle "

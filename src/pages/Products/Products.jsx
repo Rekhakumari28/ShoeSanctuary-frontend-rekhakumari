@@ -4,41 +4,55 @@ import Footer from "../../components/Footer";
 import { useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductCard from "./ProductCard";
-import { useGetOrderItems, useGetWishlist } from "../../components/FatchingData";
+import {
+  useGetOrderItems,
+  useGetWishlist,
+} from "../../components/FatchingData";
+import useFetch from "../../useFetch";
 
-const Products = ({ products, loadingProducts, errorProducts }) => {
-
+const Products = () => {
   const [filterByCategory, setFilterByCategory] = useState([]);
   const [filterByRating, setFilterByRating] = useState(0);
   const [filterByPrice, setFilterByPrice] = useState("");
   const [searchProduct, setSearchProduct] = useState("");
-
-  const { orderItems } = useGetOrderItems()
-  const { wishlist } = useGetWishlist()
+  const { orderItems } = useGetOrderItems();
+  const { wishlist } = useGetWishlist();
 
   const ref = useRef([]);
   const refPrice1 = useRef([null]);
   const refPrice2 = useRef([null]);
+
+  const { data, loading, error } = useFetch("https://backend-shoesanctuary-major-project.vercel.app/api/products")
+
   const productCategory = useParams();
 
   //handle filter by category
   const handleCategoryCheckbox = (event) => {
     const { value, checked } = event.target;
+
     if (checked) {
       setFilterByCategory((prevValue) => [...prevValue, value]);
-    } else {
+    }
+    else {
       setFilterByCategory((prevValue) =>
         prevValue.filter((prev) => prev != value)
       );
     }
   };
 
+  let filteredDatas = data?.filter((product) => product.category?.category.includes(productCategory.productCategory));
+
+  console.log(filteredDatas, "hello")
+
   const categoryFilter =
     filterByCategory.length === 0
-      ? products
-      : products.filter((prod) =>
+      ? filteredDatas && filteredDatas.length !== 0
+       ? filteredDatas 
+       : data
+      : data?.filter((prod) =>
         filterByCategory.includes(prod.category?.category)
       );
+
 
   //handle filter by rating
 
@@ -64,27 +78,6 @@ const Products = ({ products, loadingProducts, errorProducts }) => {
           (firstItem, secondItem) => secondItem.price - firstItem.price
         );
 
-  // handle category directally from home page
-
-  // const categoryFromHomePage = !productCategory.productCategory
-  //   ? filterPrice : filterPrice.filter(product=> {
-  //    const categoryFilter =  product.category.category.includes(productCategory.productCategory) 
-  //     ref.current.filter(input => input.value === productCategory.productCategory).checked = true
-
-  //     return categoryFilter
-  //   })
-  
-
-// const checkCategory =  ref.current?.find(input=> input.value === productCategory.productCategory)
-// const check1Category = ref.current[0].checked = true
-
-// const categoryFromHomePage =  !productCategory.productCategory ? filterPrice : (filterPrice , check1Category )
-
-// console.log(categoryFromHomePage)
-// console.log(check1Category )
-
-
-
   //handle crear all filters
   const handleClearFilter = () => {
     ref.current.forEach((num) => (num.checked = false));
@@ -99,10 +92,13 @@ const Products = ({ products, loadingProducts, errorProducts }) => {
     searchProduct === ""
       ? filterPrice
       : filterPrice?.filter((product) => {
-        const categoryMatch = product.category.category.toLowerCase().includes(searchProduct)
-        const productMatch = product.title.toLowerCase().includes(searchProduct)
-        return categoryMatch || productMatch
-
+        const categoryMatch = product.category.category
+          .toLowerCase()
+          .includes(searchProduct);
+        const productMatch = product.title
+          .toLowerCase()
+          .includes(searchProduct);
+        return categoryMatch || productMatch;
       });
 
   return (
@@ -126,8 +122,9 @@ const Products = ({ products, loadingProducts, errorProducts }) => {
                     ref.current[0] = element;
                   }}
                   type="checkbox"
-                  name="category"
+                  name="Men"
                   value="Men"
+                  checked={filterByCategory.includes("Men")}
                   onChange={handleCategoryCheckbox}
                 />{" "}
                 Men{" "}
@@ -139,8 +136,9 @@ const Products = ({ products, loadingProducts, errorProducts }) => {
                     ref.current[1] = element;
                   }}
                   type="checkbox"
-                  name="category"
+                  name="Women"
                   value="Women"
+                  checked={filterByCategory.includes("Women")}
                   onChange={handleCategoryCheckbox}
                 />{" "}
                 Women{" "}
@@ -152,8 +150,9 @@ const Products = ({ products, loadingProducts, errorProducts }) => {
                     ref.current[2] = element;
                   }}
                   type="checkbox"
-                  name="category"
+                  name="Girls"
                   value="Girls"
+                  checked={filterByCategory.includes("Girls")}
                   onChange={handleCategoryCheckbox}
                 />{" "}
                 Girls{" "}
@@ -165,8 +164,9 @@ const Products = ({ products, loadingProducts, errorProducts }) => {
                     ref.current[3] = element;
                   }}
                   type="checkbox"
-                  name="category"
+                  name="Boys"
                   value="Boys"
+                  checked={filterByCategory.includes("Boys")}
                   onChange={handleCategoryCheckbox}
                 />{" "}
                 Boys{" "}
@@ -228,20 +228,27 @@ const Products = ({ products, loadingProducts, errorProducts }) => {
               </h4>
             </div>
           </div>
+
           <div className="col-md-10">
+            {loading && (
+              <p className="text-center p-3 mb-2 bg-primary-subtle text-info-emphasis fw-normal ">
+                Loading...
+              </p>
+            )}
+            {error && (
+              <p className="text-center p-3 mb-2 bg-warning-subtle text-info-emphasis fw-normal">
+                {error}
+              </p>
+            )}
             <div className="row ms-2">
-              {loadingProducts ? (
-                <p className="text-center p-3 mb-2 bg-primary-subtle text-info-emphasis fw-normal ">
-                  Loading...
-                </p>
-              ) : errorProducts ? (
-                <p className="text-center p-3 mb-2 bg-warning-subtle text-info-emphasis fw-normal">
-                  {errorProducts}
-                </p>
-              ) : (
-                handleSearchProductFromNavbar?.map((product) =>
-                  <ProductCard key={product._id} product={product} wishlist={wishlist} orderItems={orderItems} />
-                ))}
+              {handleSearchProductFromNavbar?.map((product) => (
+                <ProductCard
+                  key={product._id}
+                  product={product}
+                  wishlist={wishlist}
+                  orderItems={orderItems}
+                />
+              ))}
             </div>
           </div>
         </div>

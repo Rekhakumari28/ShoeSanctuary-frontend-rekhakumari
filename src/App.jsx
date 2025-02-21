@@ -31,10 +31,7 @@ function App() {
         <Route
           path="/products"
           element={
-            <Products
-              products={products}
-              loadingProducts={loadingProducts}
-              errorProducts={errorProducts}             
+            <Products  
             />
           }
         />
@@ -69,12 +66,7 @@ function App() {
         <Route
           path="/products/:productCategory"
           element={
-            <Products
-              products={products}
-              loadingProducts={loadingProducts}
-              errorProducts={errorProducts}
-              wishlist={wishlist}
-            />
+            <Products />
           }
         />
         <Route
