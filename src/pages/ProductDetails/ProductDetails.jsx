@@ -186,10 +186,10 @@ const handleSizeChange =async (object)=>{
             {errorProducts}
           </p>
         )}
-        <div className="row my-3">
+        <div className="row my-3 ">
           <h2>Product Details</h2>
 
-          <div className="col-auto ">
+          <div className="ms-5 col-md-5  ">
             <div
               className="card border-0 shadow-lg"
               style={{ height: "400px", width: "450px" }}
@@ -215,7 +215,7 @@ const handleSizeChange =async (object)=>{
                 </div>
               </div>
             </div>
-             <div className="d-grid gap-2">
+            <div className="d-grid gap-2">
           <button
             className="btn btn-primary" disabled= { productSize === "" ? true : false} 
             onClick={() => {
@@ -224,19 +224,11 @@ const handleSizeChange =async (object)=>{
           >{!current ? "Add to Cart" : "Go To Cart"}
            
           </button>{" "}
-          <button isActive={active}
-            onClick={() => {
-              setActive(!active); { !active ? handleAddToWishlist(productData) : removeProductFromWishlist(productData) }
-              ;
-            }}
-            className="btn btn-outline-primary"
-          >{!active ? "Add To Wishlist" : "Remove From Wishlist"}</button>
-
-        </div>
           </div>
-          <div className="col-auto shadow-lg ">
+          </div>
+          <div className="ms-5 col-md-5">
             <div
-              className="card border-0 "
+              className="card border-0 shadow-lg "
               style={{ height: "400px", width: "500px" }}
             >
               <div className="card-body">
@@ -257,14 +249,26 @@ const handleSizeChange =async (object)=>{
                 <p>Description: {productData?.description}</p>
               </div>
             </div>
+            <div className="d-grid gap-2" style={{  width: "500px" }}>
+          
+          <button isActive={active}
+            onClick={() => {
+              setActive(!active); { !active ? handleAddToWishlist(productData) : removeProductFromWishlist(productData) }
+              ;
+            }}
+            className="btn btn-outline-primary"
+          >{!active ? "Add To Wishlist" : "Remove From Wishlist"}</button>
+
+        </div>
           </div>
+         
         </div>
         <hr />
         <div >
           <h3>Similer Products</h3>
-          <div className="row">
+          <div className="ms-3 row">
             {similerProduct?.map((product) => (
-              <div className="col-md-3 my-2 p-2" key={product._id}>
+              <div className="col-md-3 mb-2 p-2" key={product._id}>
                 <div key={product._id}>
                   <div
                     style={{ height: "260px", width: "230px" }}

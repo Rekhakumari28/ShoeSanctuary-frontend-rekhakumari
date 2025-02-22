@@ -239,7 +239,7 @@ const Products = () => {
                 {error}
               </p>
             )}
-            <div className="row ms-2">
+            <div className="row ms-2 mb-5">
               {handleSearchProductFromNavbar?.map((product) => (
                 <ProductCard
                   key={product._id}
