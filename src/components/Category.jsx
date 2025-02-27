@@ -33,7 +33,7 @@ const Category = () => {
       <h4 className="text-center">All Categories</h4>
       <div className="row ">
         {categoryImage.map((image) => (
-          <div className="col-md-3 text-center " key={image.id}>
+          <div className="col-md-2 text-center  mx-3" key={image.id}>
           <Link to={`/products/${image.category}`}  className="link-offset-2 link-offset-2-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover text-black" >
               <img
                 style={{ height: "150px", width: "150px" }}
@@ -45,6 +45,17 @@ const Category = () => {
             </Link>
           </div>
         ))}
+        <div className="col-md-2 text-center mx-3">
+        <Link to={`/products/All`}  className="link-offset-2 link-offset-2-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover text-black" >
+              <img
+                style={{ height: "150px", width: "150px" }}
+                className="img-fluid rounded-circle "
+                src="https://www.solepodiatry.com.au/wp-content/uploads/basketball-shoe-buying-guide-blog-m.jpeg"
+                alt="All"
+              />
+              <p>All</p>
+            </Link>
+        </div>
       </div>
     </div>
   );

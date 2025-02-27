@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import ProductCard from "./ProductCard";
 import {
@@ -11,22 +11,73 @@ import {
 import useFetch from "../../useFetch";
 
 const Products = () => {
-  const [filterByCategory, setFilterByCategory] = useState([]);
-  const [filterByRating, setFilterByRating] = useState(0);
-  const [filterByPrice, setFilterByPrice] = useState("");
-  const [searchProduct, setSearchProduct] = useState("");
+const [allProducts, setAllProducts] = useState([])
+const [filteredData, setFilteredData] = useState([]);
   const { orderItems } = useGetOrderItems();
   const { wishlist } = useGetWishlist();
 
-  const ref = useRef([]);
-  const refPrice1 = useRef([null]);
-  const refPrice2 = useRef([null]);
+  const {productCategory} = useParams();
 
+  const [filterByCategory, setFilterByCategory] = useState(productCategory === "All"  ? ["Men", "Women", "Boys", "Girls"] : [productCategory]);
+  const [filterByRating, setFilterByRating] = useState(0);
+  const [filterByPrice, setFilterByPrice] = useState("none");
+
+  const [ filterByGender ,setFilterByGender] = useState([])
+  
   const { data, loading, error } = useFetch("https://backend-shoesanctuary-major-project.vercel.app/api/products")
 
-  const productCategory = useParams();
+useEffect(()=>{
+if(productCategory === "All"){
+  setFilterByCategory([])
+}else{
+  setFilterByCategory([productCategory])
+}
+},[productCategory])
+
+
+useEffect(()=>{
+  if(data ){
+    setAllProducts(data)
+    setFilteredData(data)
+  }
+},[data])
+
+useEffect(()=>{
+  allFilter()
+},[filterByCategory, filterByRating, filterByPrice, allProducts])
+
+const allFilter = ()=>{
+  let filtered = allProducts
+
+  //filter by category
+  if(filterByCategory.length > 0 && !filterByCategory.includes("All")){
+    filtered = filtered?.filter(prod=> filterByCategory.includes(prod.category?.category))
+    setFilterByGender(filtered)
+  }
+ 
+  //filter by rating
+  if(filterByRating != 0){
+    filtered = filtered?.filter(
+      (prod) => prod.rating >= filterByRating && prod.rating < 5
+    )
+  }
+
+  //filter by price
+  if(filterByPrice === "Low to high"){
+    filtered = [...filtered]?.sort(
+      (firstItem, secondItem) => firstItem.price - secondItem.price
+    )
+  }else if("High to low"){
+filtered = [...filtered]?.sort(
+  (firstItem, secondItem) => secondItem.price - firstItem.price
+)
+  }
+ 
+  setFilteredData(filtered)
+}
 
   //handle filter by category
+
   const handleCategoryCheckbox = (event) => {
     const { value, checked } = event.target;
 
@@ -35,80 +86,46 @@ const Products = () => {
     }
     else {
       setFilterByCategory((prevValue) =>
-        prevValue.filter((prev) => prev != value)
+        prevValue.filter((prev) => prev !== value)
       );
     }
   };
 
-  let filteredData = data?.filter((product) => product.category?.category.includes(productCategory.productCategory));
-
-  
-  const categoryFilter =
-    filterByCategory.length === 0
-      ? filteredData && filteredData.length !== 0
-       ? filteredData 
-       : data
-      : data?.filter((prod) =>
-        filterByCategory.includes(prod.category?.category)
-      );
-
-
-  //handle filter by rating
-
-  const ratingFilter = !filterByRating
-    ? categoryFilter
-    : categoryFilter?.filter(
-      (prod) => prod.rating >= filterByRating && prod.rating < 5
-    );
 
   //handle filter by price sorting
   const handlePriceSort = (event) => {
     setFilterByPrice(event.target.value);
   };
 
-  const filterPrice =
-    filterByPrice === ""
-      ? ratingFilter
-      : filterByPrice === "Low to high"
-        ? ratingFilter?.sort(
-          (firstItem, secondItem) => firstItem.price - secondItem.price
-        )
-        : ratingFilter?.sort(
-          (firstItem, secondItem) => secondItem.price - firstItem.price
-        );
+const handleRatingFilter = (event)=>{
+  setFilterByRating(event.target.value)
+}
 
   //handle crear all filters
-  const handleClearFilter = () => {
-    ref.current.forEach((num) => (num.checked = false));
+  const handleClearFilter = () => {    
     setFilterByCategory([]);
     setFilterByRating(0);
-    setFilterByPrice("");
-    refPrice1.current.checked = false;
-    refPrice2.current.checked = false;
+    setFilterByPrice("none");    
   };
 
-  const handleSearchProductFromNavbar =
-    searchProduct === ""
-      ? filterPrice
-      : filterPrice?.filter((product) => {
-        const categoryMatch = product.category.category
-          .toLowerCase()
-          .includes(searchProduct);
-        const productMatch = product.title
-          .toLowerCase()
-          .includes(searchProduct);
-        return categoryMatch || productMatch;
-      });
+  
+  const handleSearchProductFromNavbar = (searchProduct)=>{
+    if(searchProduct === ""){
+      setFilteredData(filterByGender)
+    }else {
+      const filtered = filteredData.filter(product=> product.title.toLowerCase().includes(searchProduct.toLowerCase()))
+      setFilteredData(filtered)
+    }
+  }
 
-  return (
+    return (
     <div>
       <Header
-        value={searchProduct}
-        searchProducts={(event) => setSearchProduct(event.target.value)}
+              searchProducts={()=>handleSearchProductFromNavbar}
       />
       <div className="container-fluid">
         <div className="row">
-          <div className="col-md-2 bg-body-tertiary">
+          <div className="col-md-2 bg-body-tertiary mb-5">
             {/* categoryFilter */}
             <div className="mx-3">
               <label className="my-2">
@@ -117,60 +134,49 @@ const Products = () => {
               <br />
               <label className="my-2">
                 <input
-                  ref={(element) => {
-                    ref.current[0] = element;
-                  }}
-                  type="checkbox"
-                  name="Men"
-                  value="Men"
-                  checked={filterByCategory.length === 0 ? filteredData?.map(prod=>prod.category?.category).includes("Men") : filterByCategory.includes("Men")}
                   onChange={handleCategoryCheckbox}
+                  type="checkbox"
+                  name="category"
+                  value="Men"
+                  checked={filterByCategory.includes("Men") }
                 />{" "}
                 Men{" "}
               </label>
               <br />
               <label className="my-2">
                 <input
-                  ref={(element) => {
-                    ref.current[1] = element;
-                  }}
-                  type="checkbox"
-                  name="Women"
-                  value="Women"
-                  checked={filterByCategory.length === 0 ? filteredData?.map(prod=>prod.category?.category).includes("Women") : filterByCategory.includes("Women")}
-                  onChange={handleCategoryCheckbox}
+                onChange={handleCategoryCheckbox}
+                type="checkbox"
+                name="category"
+                value="Women"
+                checked={ filterByCategory.includes("Women")}
                 />{" "}
                 Women{" "}
               </label>
               <br />
               <label className="my-2">
                 <input
-                  ref={(element) => {
-                    ref.current[2] = element;
-                  }}
-                  type="checkbox"
-                  name="Girls"
-                  value="Girls"
-                  checked={filterByCategory.length === 0 ? filteredData?.map(prod=>prod.category?.category).includes("Girls") : filterByCategory.includes("Girls")}
-                  onChange={handleCategoryCheckbox}
+                   onChange={handleCategoryCheckbox}
+                   type="checkbox"
+                   name="category"
+                   value="Girls"
+                   checked={filterByCategory.includes("Girls")}
                 />{" "}
                 Girls{" "}
               </label>
               <br />
               <label className="my-2">
                 <input
-                  ref={(element) => {
-                    ref.current[3] = element;
-                  }}
-                  type="checkbox"
-                  name="Boys"
-                  value="Boys"
-                  checked={filterByCategory.length === 0 ? filteredData?.map(prod=>prod.category?.category).includes("Boys") : filterByCategory.includes("Boys")}
-                  onChange={handleCategoryCheckbox}
+                   onChange={handleCategoryCheckbox}
+                   type="checkbox"
+                   name="category"
+                   value="Boys"
+                   checked={ filterByCategory.includes("Boys")}
                 />{" "}
                 Boys{" "}
               </label>
               <br />
+           
             </div>
 
             {/* ratingFilter */}
@@ -178,12 +184,12 @@ const Products = () => {
               <h3>Rating</h3>
               <label className="my-2">
                 <input
+                  onChange={handleRatingFilter}
                   type="range"
                   value={filterByRating}
                   min={0}
                   max={5}
                   step={0.1}
-                  onChange={(event) => setFilterByRating(event.target.value)}
                 />
                 {filterByRating}
               </label>
@@ -197,7 +203,7 @@ const Products = () => {
                   type="radio"
                   value="Low to high"
                   name="price"
-                  ref={refPrice1}
+                  checked={filterByPrice === "Low to high"}
                   onChange={handlePriceSort}
                 />{" "}
                 Low to high
@@ -207,7 +213,7 @@ const Products = () => {
                   type="radio"
                   value="High to low"
                   name="price"
-                  ref={refPrice2}
+                  checked={filterByPrice === "High to low"}
                   onChange={handlePriceSort}
                 />{" "}
                 High to low
@@ -240,7 +246,7 @@ const Products = () => {
               </p>
             )}
             <div className="row ms-2 mb-5">
-              {handleSearchProductFromNavbar?.map((product) => (
+              {filteredData?.map((product) => (
                 <ProductCard
                   key={product._id}
                   product={product}

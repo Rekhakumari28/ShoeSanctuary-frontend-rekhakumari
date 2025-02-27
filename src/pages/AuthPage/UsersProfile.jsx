@@ -6,7 +6,8 @@ const UsersProfile = ({ user }) => {
 
   const userProfile = user?.length > 0 && user[user?.length - 1]
   const { data } = useFetch(`https://backend-shoesanctuary-major-project.vercel.app/api/cartHistory`)
-  console.log(userProfile?.profileImage)
+  const dataList = data?.reverse()
+
   return (
     <div>
       <Header />
@@ -27,7 +28,7 @@ const UsersProfile = ({ user }) => {
             </div>
             <div className='my-2'>
               <h4>Order History</h4>
-              {data?.map(order => (
+              {dataList?.map(order => (
                 <ul className='list-group' key={order._id}>
                   {order?.orderItems?.map(product => (
                     <li className='list-group-item' key={product._id}>

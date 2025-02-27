@@ -63,7 +63,7 @@ const Header = (props) => {
                         />
                       </div>
                     ) : (
-                      <Link to="/products" className="nav-link">
+                      <Link to="/products/All" className="nav-link">
                         <button className="btn btn-outline-secondary btn-sm">
                           Products
                         </button>
