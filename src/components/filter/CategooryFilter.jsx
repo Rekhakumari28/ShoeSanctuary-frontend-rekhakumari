@@ -10,21 +10,17 @@ const CategoryFilter = ({ categories, onCategoryChange, reset }) => {
   }, [reset]);
 
   const handleCategoryCheckbox = (event) => {
-    const { value, checked } = event.target;
-
-    if (checked) {
-      setSelectedCategories((prevValue) => [...prevValue, value]);
-    }
-    else {
-      setSelectedCategories((prevValue) =>
-        prevValue.filter((prev) => prev !== value)
-      );
-    }
+    const category = event.target.value;
+    const updatedCategories = selectedCategories.includes(category)
+      ? selectedCategories.filter((id) => id !== category)
+      : [...selectedCategories, category];
+    setSelectedCategories(updatedCategories);
+    onCategoryChange(updatedCategories);
   }; 
 
-  // useEffect(() => {
-  //   onCategoryChange(selectedCategories);
-  // }, [selectedCategories, onCategoryChange]);
+  useEffect(() => {
+    onCategoryChange(selectedCategories);
+  }, [selectedCategories, onCategoryChange]);
 
   return (
     <>
@@ -34,49 +30,20 @@ const CategoryFilter = ({ categories, onCategoryChange, reset }) => {
       <h3>Category</h3>
     </label>
     <br />
-    <label className="my-2">
+    {categories.map((category)=> 
+      <label className="my-2" key={category.id}>
       <input
         onChange={handleCategoryCheckbox}
         type="checkbox"
         name="category"
-        value="Men"
-        checked={selectedCategories.includes("Men") }
+        value={category.category}
+        checked={selectedCategories.includes(category.category) }
       />{" "}
-      Men{" "}
+      {category.category}{" "}
     </label>
-    <br />
-    <label className="my-2">
-      <input
-      onChange={handleCategoryCheckbox}
-      type="checkbox"
-      name="category"
-      value="Women"
-      checked={ selectedCategories.includes("Women")}
-      />{" "}
-      Women{" "}
-    </label>
-    <br />
-    <label className="my-2">
-      <input
-         onChange={handleCategoryCheckbox}
-         type="checkbox"
-         name="category"
-         value="Girls"
-         checked={selectedCategories.includes("Girls")}
-      />{" "}
-      Girls{" "}
-    </label>
-    <br />
-    <label className="my-2">
-      <input
-         onChange={handleCategoryCheckbox}
-         type="checkbox"
-         name="category"
-         value="Boys"
-         checked={ selectedCategories.includes("Boys")}
-      />{" "}
-      Boys{" "}
-    </label>
+    )}
+  
+  
     <br />
  
   </div>

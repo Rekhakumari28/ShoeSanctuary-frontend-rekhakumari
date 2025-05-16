@@ -49,15 +49,12 @@ export const productSlice = createSlice({
     loading: false,
     error: null,
     sortOrder: "lowToHigh",
-    priceRange: { min: 100, max: 10000 },
+   
   },
   reducers: {
     setSortOrder(state, action) {
       state.sortOrder = action.payload;
-    },
-    setPriceRange(state, action) {
-      state.priceRange = action.payload;
-    },
+    }
   },
   extraReducers: (builder) => {
     //fetch all products
@@ -109,7 +106,6 @@ export const productSlice = createSlice({
 export const { setSortOrder, setPriceRange } = productSlice.actions;
 
 export const selectAllProducts = (state) => state.allProducts.products;
-export const selectSortOrder = (state) => state.allProducts.sortOrder;
-export const selectPriceRange = (state) => state.allProducts.priceRange;
+
 
 export default productSlice.reducer;

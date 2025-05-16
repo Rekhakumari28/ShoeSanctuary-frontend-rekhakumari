@@ -10,8 +10,8 @@ export const fetchAllCategories = createAsyncThunk(
       const response = await axios.get(
         `${shoeSantuary_URL}/api/categories`
       );
-      // console.log(response.data.data.categories)
-      return response.data.data.categories; 
+      console.log(response.data ,"categories")
+      return response.data; 
     } catch (error) {
       throw new Error(
         error.response ? error.response.data : "Failed to fetch data"

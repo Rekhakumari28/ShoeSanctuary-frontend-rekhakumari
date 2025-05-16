@@ -5,12 +5,9 @@ import { shoeSantuary_URL } from "./userSlice";
 // Async thunk to fetch order history
 export const fetchOrderHistory = createAsyncThunk(
   "order/fetchOrderHistory",
-  async ({ userId }, { rejectWithValue }) => {
-    try {
-      const token = localStorage.getItem("jwtToken");
-      if (!userId) {
-        return rejectWithValue("User ID is required");
-      }
+  async (userId) => {  
+    const token = localStorage.getItem("jwtToken");
+    if (!token) throw new Error("No authentication token found");
 
       const response = await axios.get(
         `${shoeSantuary_URL}/api/orders/${userId}/order-history`,
@@ -20,18 +17,11 @@ export const fetchOrderHistory = createAsyncThunk(
           },
         }
       );
-
-      return response.data;
-    } catch (error) {
-      console.error(
-        "Error fetching order history:",
-        error.response?.data || error.message
-      );
-      return rejectWithValue(
-        error.response?.data || "Failed to fetch order history"
-      );
+      const data = response.data
+      console.log(data, "response")
+      return data
     }
-  }
+    
 );
 
 // Async thunk to fetch order details by order ID
@@ -42,10 +32,8 @@ export const fetchOrderDetails = createAsyncThunk(
       const token = localStorage.getItem("jwtToken");
       if (!token) throw new Error("No authentication token found");
 
-      console.log("API call to:", `orders/${userId}/details/${orderId}`);
-
       const response = await axios.get(
-        `${shoeSantuary_URL}/api/orders/${userId}/details/6826fe38515e662cc4db3116`,
+        `${shoeSantuary_URL}/api/orders/${userId}/order-details/${orderId}`,
         {
           headers: { Authorization: `${token}` },
         }
@@ -130,6 +118,7 @@ const orderSlice = createSlice({
       .addCase(fetchOrderDetails.fulfilled, (state, action) => {
         state.loading = false;
         state.orderDetails = action.payload;
+        console.log(action.payload, "action")
       })
       .addCase(fetchOrderDetails.rejected, (state, action) => {
         state.loading = false;

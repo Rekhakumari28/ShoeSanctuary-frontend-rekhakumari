@@ -5,33 +5,21 @@ import { fetchUserById, logout } from "../../reducer/userSlice";
 import toast from "react-hot-toast";
 import Address from "../Address/Address";
 import { jwtDecode } from "jwt-decode";
+import { fetchOrderHistory } from "../../reducer/orderSlice";
+import { ProductCardComponent } from "../../components/ProductCardComponent";
+
 const UsersProfile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
      const {user, loading, error} = useSelector((state)=>state.user)
      let userId = user ? user.user._id : null;
-
-   const token = localStorage.getItem("jwtToken"); 
-    
-  //  useEffect(() => {
-  //    if (token) {
-  //      try {
-  //        const decoded = jwtDecode(token);
-  //        console.log("Decoded JWT:", decoded); // Check the actual field names
-  //        setUserId(decoded._id); // Try both _id and id
-  //        console.log(decoded._id, "id")
-  //      } catch (error) {
-  //        console.error("Error decoding JWT token:", error);
-  //        localStorage.removeItem("jwtToken"); // Remove invalid token
-  //        toast.error("Invalid session. Please log in again.");
-  //        setUserId(null);
-  //        navigate("/login"); // Redirect to login page if necessary
-  //      }
-  //    }
-  //  }, [navigate]);
-   console.log(userId)
+const { orders } = useSelector((state) => {
+    return state.order;
+  });
+ 
   useEffect(() => {   
-      dispatch(fetchUserById({ _id: userId }));   
+      dispatch(fetchUserById({ _id: userId })); 
+        dispatch(fetchOrderHistory(userId)); 
   }, [dispatch, userId]);
 
   const handleLogout = () => {
@@ -39,6 +27,9 @@ const UsersProfile = () => {
     toast.success("Logout Successfullly!");
     navigate("/");
   };
+ 
+ console.log(user)
+
 
   return (
     <div className="container p-4  mb-5 ">
@@ -55,7 +46,7 @@ const UsersProfile = () => {
           </p>
         )}
         <div className="row text-center border bg-light rounded ">
-          <div className="col-md-2 align-items-start mt-4 ">
+          <div className="col-md-2 align-items-start my-4 ">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="100"
@@ -72,8 +63,8 @@ const UsersProfile = () => {
             </svg>
           </div>
           <div className="col-md-6 d-flex flex-column align-items-start mt-2 ">
-            <h1 className="display-4">{user.name}</h1>
-            <p className="fw-normal fs-5">{user.email}</p>
+            <h1 className="display-4">{user.user?.name}</h1>
+            <p className="fw-normal fs-5">{user.user?.email}</p>
           </div>
           <div className="col-md-4 d-flex justify-content-end ">
             <div className="row">
@@ -97,6 +88,21 @@ const UsersProfile = () => {
       </section>
       <section>
         <Address />
+      </section>
+      <section className=" mt-3 row border bg-light rounded">
+      
+        {orders.map(order=> <div className="col-md-12 py-3" key={order._id}>
+  <div className="col-md-6 py-3" >
+                    <div className="card">
+                      <div className="card-body">
+                        <div className="row">
+                         <ProductCardComponent  products={order.cartItems.products}/>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+        </div> )}
+       
       </section>
     </div>
   );

@@ -11,7 +11,6 @@ export const addItemToBag = createAsyncThunk(
       console.error("User ID is undefined");
       return rejectWithValue("User ID is required to add an item to the bag.");
     }
-
     try {
       console.log( productId, title, price, images, quantity)
       const response = await axios.post(
@@ -22,8 +21,7 @@ export const addItemToBag = createAsyncThunk(
             Authorization: `${localStorage.getItem("jwtToken")}`,
           },
         }
-      );
-  
+      );  
       return response.data;
     } catch (error) {
       console.error("Add to bag error:", error.response?.data);
@@ -45,7 +43,6 @@ export const removeItemFromBag = createAsyncThunk(
           },
         }
       );
-      console.log(response, "response")
       return response.data;
     } catch (error) {
       console.error("Remove from bag error:", error.response?.data);
@@ -69,7 +66,7 @@ export const updateItemQuantityInBag = createAsyncThunk(
           },
         }
       );
-      console.log(response.data, "response update")
+     
       return response.data;
     } catch (error) {
       console.error("Update quantity error:", error.response?.data);
@@ -96,7 +93,7 @@ export const fetchCart = createAsyncThunk(
         },
       }
     );
-    console.log(response.data, "response fetching")
+   
     return response.data;
   }
 );
@@ -122,7 +119,7 @@ const shoppingBagSlice = createSlice({
             .addCase(addItemToBag.fulfilled, (state, action) => {
               state.loading = false;
               state.items = action.payload;
-                console.log(action.payload, "action.payload adding")
+                // console.log(action.payload, "action.payload adding")
             })
             .addCase(addItemToBag.rejected, (state, action) => {
               state.loading = false;
@@ -135,7 +132,7 @@ const shoppingBagSlice = createSlice({
       .addCase(removeItemFromBag.fulfilled, (state, action) => {
         state.loading = false;
         state.items = action.payload;
-          console.log(action.payload, "action.payload remove")
+          // console.log(action.payload, "action.payload remove")
       })
       .addCase(removeItemFromBag.rejected, (state, action) => {
         state.loading = false;
@@ -148,7 +145,7 @@ const shoppingBagSlice = createSlice({
       .addCase(updateItemQuantityInBag.fulfilled, (state, action) => {
         state.loading = false;
         state.items = action.payload
-          console.log(action.payload, "action.payload update")
+          // console.log(action.payload, "action.payload update")
       })
       .addCase(updateItemQuantityInBag.rejected, (state, action) => {
         state.loading = false;
@@ -161,7 +158,7 @@ const shoppingBagSlice = createSlice({
       .addCase(fetchCart.fulfilled, (state, action) => {
         state.loading = false;
         state.items = action.payload
-          console.log(action.payload, "action.payload fetch")
+          // console.log(action.payload, "action.payload fetch")
       })
       .addCase(fetchCart.rejected, (state, action) => {
         state.loading = false;

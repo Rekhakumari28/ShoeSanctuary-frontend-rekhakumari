@@ -15,13 +15,13 @@ function AddressList({address , userId}) {
     <>
       {  address && address?.length > 0 ?  
               address?.map((address) => (
-                <div className="col-md-12 py-2" key={address._id}>
+                <div className="col-md-3 py-2" key={address._id}>
                   <div className="card">
                     <div className="card-body">
                       {address.name}, {address.city}, {address.postalCode},{" "}
                       {address.country}
                       <button
-                        className="btn btn-danger float-end btn-sm"
+                        className="btn btn-danger float-end btn-sm mt-1"
                         onClick={() => handleRemove(address._id)}
                       >
                         Remove

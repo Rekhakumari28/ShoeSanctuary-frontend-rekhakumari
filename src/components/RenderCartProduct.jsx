@@ -97,7 +97,7 @@ const RenderCartProduct = () => {
   );
 
   return (
-    <div>
+    <>
        {loading === true && (
           <p className="text-center p-3 mb-2 bg-primary-subtle text-info-emphasis fw-normal ">
             Loading...
@@ -111,14 +111,15 @@ const RenderCartProduct = () => {
       {items.products && items.products?.length > 0 ? (
         items.products?.map((product) => (
           <div
-            className="card bg-body-tertiary shadow p-3 my-3 border-0"
+            className="card bg-body-tertiary mb-3 border-0"
             key={product.productId}
-            style={{ maxWidth: "540px" }}
+            style={{ maxWidth: "540px"  }}
           >
-            <div className="row g-0">
+            <div className="row g-0 p-2">
               <div className="col-md-5 ">
                 <div className="d-grid ">
                   <img
+                
                     className="img-fluid "
                     src={product.images}
                     alt={product.title}
@@ -187,7 +188,7 @@ const RenderCartProduct = () => {
       ) : (
         <p className="p-3 bg-body-tertiary rounded ms-3">Cart is Empty.</p>
       )}
-    </div>
+    </>
   );
 };
 export default RenderCartProduct;

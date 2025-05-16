@@ -1,58 +1,39 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setSortOrder, selectSortOrder } from "../../reducer/productSlice";
+import { setSortOrder } from "../../reducer/productSlice";
 
 const PriceFilterComponent = () => {
-  const [filterByPrice, setFilterByPrice] = useState("none");
   const dispatch = useDispatch();
-  const sortOrder = useSelector(selectSortOrder);
+  const sortOrder = useSelector((state)=>{
+    console.log(state.allProducts.sortOrder)
+    return state.allProducts.sortOrder
+  });
 
-  const handlePriceSort = (event) => {
-    setFilterByPrice(event.target.value);
+  const handleSortChange = (e) => {
+    dispatch(setSortOrder(e.target.value));
   };
 
   return (
-    // <div>
-    //   <h5 className="fw-bolder">Sort by Price</h5>
-    //   <label>
-    //     <input
-    //       type="radio"
-    //       value="lowToHigh"
-    //       checked={sortOrder === "lowToHigh"}
-    //       onChange={handleSortChange}
-    //     />{" "}
-    //      Low to High
-    //   </label>
-    //   <br/>
-    //   <label>
-    //     <input
-    //       type="radio"
-    //       value="highToLow"
-    //       checked={sortOrder === "highToLow"}
-    //       onChange={handleSortChange}
-    //     />{" "}
-    //     High to Low
-    //   </label>
-    // </div>
+   
     <div className="mx-3">
     <h3>Price</h3>
     <label>
       <input
         type="radio"
-        value="Low to high"
+        value="lowToHigh"
         name="price"
-        checked={filterByPrice === "Low to high"}
-        onChange={handlePriceSort}
+        checked={sortOrder === "lowToHigh"}
+        onChange={handleSortChange}
       />{" "}
       Low to high
     </label>{" "}
     <label>
       <input
         type="radio"
-        value="High to low"
+        value="highToLow"
         name="price"
-        checked={filterByPrice === "High to low"}
-        onChange={handlePriceSort}
+        checked={sortOrder === "highToLow"}
+        onChange={handleSortChange}
       />{" "}
       High to low
     </label>

@@ -22,6 +22,7 @@ import CategoryFilter from "../../components/filter/CategooryFilter";
 import RatingFilterComponent from "../../components/filter/RatingFilterComponent";
 import PriceFilterComponent from "../../components/filter/PriceFilterComponent";
 import toast from "react-hot-toast";
+import { categoryImage } from "../../components/Category";
 
 const Products = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -39,13 +40,10 @@ const Products = () => {
   const { products, loading, error } = useSelector(
     (state) => state.allProducts
   );
-
-  const categories = useSelector((state) => state.categories.categories);
   const searchTerm = useSelector((state) => state.search.searchTerm);
   const sortOrder = useSelector((state) => state.allProducts.sortOrder);
-
   const priceRange = useSelector((state) => state.allProducts.priceRange);
-  
+
   //fetching wishlist
   useEffect(() => {
     if (userId) {
@@ -60,56 +58,43 @@ const Products = () => {
     dispatch(fetchAllCategories());
   }, [dispatch]);
 
-  const filteredProducts = products.length>0 && products.data?.products?.filter((product) => {
+  const filteredProducts = products.data?.products?.length> 0 && products.data?.products?.filter((product) => {
+    
     const searchProducts = product.title.toLowerCase().includes(searchTerm);
 
     const selectedCategory =
-      selectedCategories.length === 0 ||
-      selectedCategories.includes(product.category?._id);
+    selectedCategories.length === 0 ||
+    selectedCategories.includes(product.category.category);
 
     const selectedMatchRating =
-      selectedRating === null || product.rating >= selectedRating;
-
-    const selectedPriceRange =
-      product.price >= priceRange.min && product.price <= priceRange.max;
+      selectedRating === null || product.rating >= selectedRating;    
 
     return (
       searchProducts &&
       selectedCategory &&
-      selectedMatchRating &&
-      selectedPriceRange
+      selectedMatchRating 
+     
     );
   });
-  
+  console.log(filteredProducts)
   const sortedProducts = filteredProducts?.length> 0 ? [...filteredProducts].sort((a, b) => {
     return sortOrder === "lowToHigh" ? a.price - b.price : b.price - a.price;
   }) : products.data?.products;
 
   //handle filter by category
-  const handleCategoryChange = useCallback((categories) => {
-    setSelectedCategories(categories);
+  const handleCategoryChange = useCallback((categoryImage) => {
+    setSelectedCategories(categoryImage);
   }, []);
-
-  //handle filter by price sorting
-  const handlePriceSort = (event) => {
-    setFilterByPrice(event.target.value);
-  };
 
   const handleRatingChange = useCallback((rating) => {
     setSelectedRating(rating);
   }, []);
-  //handle crear all filters
-  const clearFilters = () => {
-    setSelectedCategories([]);
+
+  const handleClearFilter = () => {    
+   setSelectedCategories([]);
     setSelectedRating(null);
     setResetFilters(true);
-    dispatch(setSortOrder("lowToHigh"));
-    dispatch(setPriceRange({ min: 100, max: 10000 }));
-  };
-  const handleClearFilter = () => {    
-    setFilterByCategory([]);
-    setFilterByRating(0);
-    setFilterByPrice("none");    
+    dispatch(setSortOrder(null));  
   };
 
   useEffect(() => {
@@ -181,7 +166,7 @@ const Products = () => {
       toast.error(err.message || "Failed to add item to bag");
     }
   };
-console.log(categories, "categories")
+
   return (
     <div>
       <div className="container-fluid">
@@ -189,13 +174,14 @@ console.log(categories, "categories")
           <div className="col-md-2 bg-body-tertiary mb-5">
             {/* categoryFilter */}
             <CategoryFilter
-             categories={categories}
+             categories={categoryImage}
              onCategoryChange={handleCategoryChange}
             />
             <hr />
 
             {/* ratingFilter */}
-            <RatingFilterComponent/>
+            <RatingFilterComponent  onRatingChange={handleRatingChange}
+            reset={resetFilters}/>
              
             <hr />
 

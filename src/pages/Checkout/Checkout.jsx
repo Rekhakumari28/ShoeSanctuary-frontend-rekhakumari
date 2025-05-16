@@ -1,26 +1,23 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { fetchOrderDetails, fetchOrderHistory } from "../../reducer/orderSlice";
+import { fetchOrderDetails } from "../../reducer/orderSlice";
+import { ProductCardComponent } from "../../components/ProductCardComponent";
 
 const Checkout = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user.user);
   let userId = user ? user?._id : null;
-  const { cart } = useSelector((state) => {
-    console.log(state.order);
-    return state.order;
-  });
+  const { orderDetails } = useSelector((state) => state.order);
 
   useEffect(() => {
-    dispatch(fetchOrderHistory(userId));
-    // dispatch(fetchOrderDetails(userId))
-  }, []);
+    dispatch(fetchOrderDetails(userId));
+  }, [userId]);
 
   return (
     <div>
-      <div className="container">
-        <div>
+      <div className="container mb-5">
+        <div className="pb-4">
           <div className="p-4 text-center  ">
             <Link
               to={`/home`}
@@ -38,36 +35,34 @@ const Checkout = () => {
               </p>
             </Link>
           </div>
-          <div className="card rounded p-2 bg-body-tertiary mb-2">
-            <h4 className="ms-3 p-2 mt-2 ">
-              Order Summery: Total Order Amount: ₹{}
-            </h4>
-            <hr />
+          <div className="card rounded p-2 bg-body-tertiary mb-5">
             <div className="row mt-3">
-              {/* {cart?.orderItems?.map(order=>(
-                  <>
-                  <div className='col-md-3 text-center' key={order._id}>
-                  <img className='p-1' style={{height:"120px", width:"120px"}} src={order.product.images} alt={order.product.title} />
-                </div>
-                 <div className='col-md-9'>                 
-                   <h5>{order.product.title}</h5>
-                   <span><strong>Price: </strong> ₹{order.product.price}</span>{" | "}
-                   <span><strong>Discount: </strong>{order.product.discount}</span>{" | "}
-                   <span><strong>Rating: </strong>{order.product.rating}</span>
-                   <p>{order.product.description.substring(0,300)}</p>  
-             
-               </div>
-               </>
-                ))}  */}
+              <h4 className="ms-3 p-2 mt-2 ">
+                Order Summery: Total Order Amount: ₹{orderDetails?.totalAmount}
+              </h4>
+              <div className=" mt-3 row ">
+                {orderDetails.cartItems?.products.map((product) => (
+                  <div className="col-md-6 py-3" key={product.productId}>
+                    <div className="card">
+                      <div className="card-body">
+                        <div className="row">
+                      
+                         <ProductCardComponent  products={product} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <hr />
-            {/* <span  className='ms-3 p-2 mt-2 mb-3 '><strong>Shipping Address:</strong> {cartSummery?.shippingAddress?.address} {cartSummery?.shippingAddress?.city} {cartSummery?.shippingAddress?.postalCode} {cartSummery?.shippingAddress?.country}</span>          */}
+
+            <span className="ms-3 p-2 mt-2 mb-3 ">
+              <strong>Shipping Address:</strong> {orderDetails?.shippingAddress}
+              {/* {orders?.shippingAddress?.address} {cartSummery?.shippingAddress?.city} {cartSummery?.shippingAddress?.postalCode} {cartSummery?.shippingAddress?.country} */}
+            </span>
           </div>
         </div>
       </div>
-      <br />
-      <br />
-      <br />
     </div>
   );
 };
