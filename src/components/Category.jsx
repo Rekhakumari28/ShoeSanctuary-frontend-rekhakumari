@@ -30,8 +30,8 @@ const Category = () => {
 
   return (
     <div className="container">
-      <h4 className="text-center">All Categories</h4>
-      <div className="row ">
+      
+      <div className="row mt-3">
         {categoryImage.map((image) => (
           <div className="col-md-2 text-center  mx-3" key={image.id}>
           <Link to={`/products/${image.category}`}  className="link-offset-2 link-offset-2-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover text-black" >

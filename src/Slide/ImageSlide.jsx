@@ -12,7 +12,7 @@ const ImageSlide = () => {
     slidesToScroll: 1,
     infinite: true,
     autoplay: true,
-    autoplaySpeed: 3000,
+    autoplaySpeed: 4000,
     pauseOnHover: true,
   };
   const myStyle = {
@@ -24,7 +24,7 @@ const ImageSlide = () => {
       <Slider {...settings}>
         {imagesForSlide.map((img, index) => (
           <div className="py-2" key={index}>
-            <Link to="/products/All">
+            <Link to="/products">
               <img style={myStyle} className="d-block w-100" src={img} />
             </Link>
           </div>

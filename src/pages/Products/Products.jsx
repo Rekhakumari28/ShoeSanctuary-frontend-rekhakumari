@@ -1,225 +1,207 @@
-import React, { useEffect } from "react";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
-import { useState } from "react";
-import { useParams } from "react-router-dom";
-import ProductCard from "./ProductCard";
+import React, { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+
+import { useDispatch, useSelector } from "react-redux";
 import {
-  useGetOrderItems,
-  useGetWishlist,
-} from "../../components/FatchingData";
-import useFetch from "../../useFetch";
+  fetchAllProducts,
+  setPriceRange,
+  setSortOrder,
+} from "../../reducer/productSlice";
+import { fetchAllCategories } from "../../reducer/categoriesSlice";
+import {
+  addItemToWishlist,
+  fetchWishlist,
+  removeItemFromWishlist,
+} from "../../reducer/wishlistSlice";
+import {
+  addItemToBag,
+  fetchCart,
+ 
+} from "../../reducer/shoppingBagSlice";
+import CategoryFilter from "../../components/filter/CategooryFilter";
+import RatingFilterComponent from "../../components/filter/RatingFilterComponent";
+import PriceFilterComponent from "../../components/filter/PriceFilterComponent";
+import toast from "react-hot-toast";
 
 const Products = () => {
-const [allProducts, setAllProducts] = useState([])
-const [filteredData, setFilteredData] = useState([]);
-  const { orderItems } = useGetOrderItems();
-  const { wishlist } = useGetWishlist();
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedRating, setSelectedRating] = useState(null);
+  const [resetFilters, setResetFilters] = useState(false);
 
-  const {productCategory} = useParams();
+  const [isWishlisted, setIsWishlisted] = useState(false);
 
-  const [filterByCategory, setFilterByCategory] = useState(productCategory === "All"  ? ["Men", "Women", "Boys", "Girls"] : [productCategory]);
-  const [filterByRating, setFilterByRating] = useState(0);
-  const [filterByPrice, setFilterByPrice] = useState("none");
+  const dispatch = useDispatch();
 
-  const [ filterByGender ,setFilterByGender] = useState([])
+  const { user } = useSelector((state) => state.user.user);
+  let userId = user ? user?._id : null;
   
-  const { data, loading, error } = useFetch("https://backend-shoesanctuary-major-project.vercel.app/api/products")
+  const wishlistItems = useSelector((state) => state.wishlist.items);
+  const { products, loading, error } = useSelector(
+    (state) => state.allProducts
+  );
 
-useEffect(()=>{
-if(productCategory === "All"){
-  setFilterByCategory([])
-}else{
-  setFilterByCategory([productCategory])
-}
-},[productCategory])
+  const categories = useSelector((state) => state.categories.categories);
+  const searchTerm = useSelector((state) => state.search.searchTerm);
+  const sortOrder = useSelector((state) => state.allProducts.sortOrder);
 
+  const priceRange = useSelector((state) => state.allProducts.priceRange);
+  
+  //fetching wishlist
+  useEffect(() => {
+    if (userId) {
+      dispatch(fetchWishlist(userId));
+      dispatch(fetchCart(userId))
+    }
+  }, [dispatch, userId]);
 
-useEffect(()=>{
-  if(data ){
-    setAllProducts(data)
-    setFilteredData(data)
-  }
-},[data])
+  //fetching products and categories
+  useEffect(() => {
+    dispatch(fetchAllProducts());
+    dispatch(fetchAllCategories());
+  }, [dispatch]);
 
-useEffect(()=>{
-  allFilter()
-},[filterByCategory, filterByRating, filterByPrice, allProducts])
+  const filteredProducts = products.length>0 && products.data?.products?.filter((product) => {
+    const searchProducts = product.title.toLowerCase().includes(searchTerm);
 
-const allFilter = ()=>{
-  let filtered = allProducts
+    const selectedCategory =
+      selectedCategories.length === 0 ||
+      selectedCategories.includes(product.category?._id);
 
-  //filter by category
-  if(filterByCategory.length > 0 && !filterByCategory.includes("All")){
-    filtered = filtered?.filter(prod=> filterByCategory.includes(prod.category?.category))
-    setFilterByGender(filtered)
-  }
- 
-  //filter by rating
-  if(filterByRating != 0){
-    filtered = filtered?.filter(
-      (prod) => prod.rating >= filterByRating && prod.rating < 5
-    )
-  }
+    const selectedMatchRating =
+      selectedRating === null || product.rating >= selectedRating;
 
-  //filter by price
-  if(filterByPrice === "Low to high"){
-    filtered = [...filtered]?.sort(
-      (firstItem, secondItem) => firstItem.price - secondItem.price
-    )
-  }else if("High to low"){
-filtered = [...filtered]?.sort(
-  (firstItem, secondItem) => secondItem.price - firstItem.price
-)
-  }
- 
-  setFilteredData(filtered)
-}
+    const selectedPriceRange =
+      product.price >= priceRange.min && product.price <= priceRange.max;
+
+    return (
+      searchProducts &&
+      selectedCategory &&
+      selectedMatchRating &&
+      selectedPriceRange
+    );
+  });
+  
+  const sortedProducts = filteredProducts?.length> 0 ? [...filteredProducts].sort((a, b) => {
+    return sortOrder === "lowToHigh" ? a.price - b.price : b.price - a.price;
+  }) : products.data?.products;
 
   //handle filter by category
-
-  const handleCategoryCheckbox = (event) => {
-    const { value, checked } = event.target;
-
-    if (checked) {
-      setFilterByCategory((prevValue) => [...prevValue, value]);
-    }
-    else {
-      setFilterByCategory((prevValue) =>
-        prevValue.filter((prev) => prev !== value)
-      );
-    }
-  };
-
+  const handleCategoryChange = useCallback((categories) => {
+    setSelectedCategories(categories);
+  }, []);
 
   //handle filter by price sorting
   const handlePriceSort = (event) => {
     setFilterByPrice(event.target.value);
   };
 
-const handleRatingFilter = (event)=>{
-  setFilterByRating(event.target.value)
-}
-
+  const handleRatingChange = useCallback((rating) => {
+    setSelectedRating(rating);
+  }, []);
   //handle crear all filters
+  const clearFilters = () => {
+    setSelectedCategories([]);
+    setSelectedRating(null);
+    setResetFilters(true);
+    dispatch(setSortOrder("lowToHigh"));
+    dispatch(setPriceRange({ min: 100, max: 10000 }));
+  };
   const handleClearFilter = () => {    
     setFilterByCategory([]);
     setFilterByRating(0);
     setFilterByPrice("none");    
   };
 
-  
-  const handleSearchProductFromNavbar = (searchProduct)=>{
-    if(searchProduct === ""){
-      setFilteredData(filterByGender)
-    }else {
-      const filtered = filteredData.filter(product=> product.title.toLowerCase().includes(searchProduct.toLowerCase()))
-      setFilteredData(filtered)
+  useEffect(() => {
+    if (resetFilters) {
+      setResetFilters(false);
     }
-  }
+  }, [resetFilters]);
 
-    return (
+  //handleToggleWishlist
+  const handleToggleWishlist = async (product) => {
+    console.log(product, userId);
+    try {
+      if (!userId) {
+        toast.error("Please log in to manage your wishlist.");
+        return;
+      }
+      const existingItem = wishlistItems.find(
+        (item) => item.productId == product._id
+      );
+      if (existingItem) {
+        await dispatch(
+          removeItemFromWishlist({
+            userId,
+            productId: product._id,
+          })
+        ).unwrap();
+        toast.error("Item removed from wishlist");
+        setIsWishlisted(false);
+      } else {
+        await dispatch(
+          addItemToWishlist({
+            userId,
+            productId: product._id,
+            title: product.title,
+            price: product.price,
+            images: product.images,
+          })
+        ).unwrap();
+        setIsWishlisted(true);
+        toast.success("Item added to wishlist");
+      }
+      dispatch(fetchWishlist(userId));
+    } catch (err) {
+      toast.error(err.message || "Failed to update wishlist");
+    }
+  };
+
+  //add to cart
+  const handleAddToBag = async (product) => {
+   try {
+          if (!userId) {
+            toast.error("Please log in to manage your wishlist.");
+            return;
+          }
+          console.log("inside", product, userId)
+      await dispatch(
+        addItemToBag({
+          userId,
+          productId: product._id,
+          title: product.title,
+          price: product.price,
+          images: product.images,
+          quantity:1
+        })
+      ).unwrap();
+      toast.success("Item added to bag");     
+      dispatch(fetchCart(userId));
+    } catch (err) {
+      toast.error(err.message || "Failed to add item to bag");
+    }
+  };
+console.log(categories, "categories")
+  return (
     <div>
-      <Header
-              searchProducts={()=>handleSearchProductFromNavbar}
-      />
       <div className="container-fluid">
         <div className="row">
           <div className="col-md-2 bg-body-tertiary mb-5">
             {/* categoryFilter */}
-            <div className="mx-3">
-              <label className="my-2">
-                <h3>Category</h3>
-              </label>
-              <br />
-              <label className="my-2">
-                <input
-                  onChange={handleCategoryCheckbox}
-                  type="checkbox"
-                  name="category"
-                  value="Men"
-                  checked={filterByCategory.includes("Men") }
-                />{" "}
-                Men{" "}
-              </label>
-              <br />
-              <label className="my-2">
-                <input
-                onChange={handleCategoryCheckbox}
-                type="checkbox"
-                name="category"
-                value="Women"
-                checked={ filterByCategory.includes("Women")}
-                />{" "}
-                Women{" "}
-              </label>
-              <br />
-              <label className="my-2">
-                <input
-                   onChange={handleCategoryCheckbox}
-                   type="checkbox"
-                   name="category"
-                   value="Girls"
-                   checked={filterByCategory.includes("Girls")}
-                />{" "}
-                Girls{" "}
-              </label>
-              <br />
-              <label className="my-2">
-                <input
-                   onChange={handleCategoryCheckbox}
-                   type="checkbox"
-                   name="category"
-                   value="Boys"
-                   checked={ filterByCategory.includes("Boys")}
-                />{" "}
-                Boys{" "}
-              </label>
-              <br />
-           
-            </div>
+            <CategoryFilter
+             categories={categories}
+             onCategoryChange={handleCategoryChange}
+            />
+            <hr />
 
             {/* ratingFilter */}
-            <div className="mx-3">
-              <h3>Rating</h3>
-              <label className="my-2">
-                <input
-                  onChange={handleRatingFilter}
-                  type="range"
-                  value={filterByRating}
-                  min={0}
-                  max={5}
-                  step={0.1}
-                />
-                {filterByRating}
-              </label>
-            </div>
+            <RatingFilterComponent/>
+             
+            <hr />
 
             {/* sortPriceFilter */}
-            <div className="mx-3">
-              <h3>Price</h3>
-              <label>
-                <input
-                  type="radio"
-                  value="Low to high"
-                  name="price"
-                  checked={filterByPrice === "Low to high"}
-                  onChange={handlePriceSort}
-                />{" "}
-                Low to high
-              </label>{" "}
-              <label>
-                <input
-                  type="radio"
-                  value="High to low"
-                  name="price"
-                  checked={filterByPrice === "High to low"}
-                  onChange={handlePriceSort}
-                />{" "}
-                High to low
-              </label>
-            </div>
-
+            <PriceFilterComponent />
+          
             {/* clearFilter */}
             <div className="mt-3 mx-3">
               <h4>
@@ -235,31 +217,100 @@ const handleRatingFilter = (event)=>{
           </div>
 
           <div className="col-md-10">
-            {loading && (
+            {loading === true && (
               <p className="text-center p-3 mb-2 bg-primary-subtle text-info-emphasis fw-normal ">
                 Loading...
               </p>
             )}
-            {error && (
+            {error !== null && (
               <p className="text-center p-3 mb-2 bg-warning-subtle text-info-emphasis fw-normal">
                 {error}
               </p>
             )}
             <div className="row ms-2 mb-5">
-              {filteredData?.map((product) => (
-                <ProductCard
-                  key={product._id}
-                  product={product}
-                  wishlist={wishlist}
-                  orderItems={orderItems}
-                />
-              ))}
+              {Array.isArray(sortedProducts) && sortedProducts.length > 0
+                ? sortedProducts?.map((product) => (
+                    <div className="col-md-3 p-2" key={product._id}>
+                      <div
+                        style={{ height: "260px", maxWidth: "300px" }}
+                        className="card bg-white border border-0 shadow mt-2"
+                      >
+                        <Link to={`/productDetails/${product._id}`}>
+                          {" "}
+                          <div className="text-center ">
+                            <img
+                              style={{ height: "150px", width: "150px" }}
+                              className="img-fluid rounded  mt-4"
+                              src={product.images}
+                              alt={product.title}
+                            />
+                            <div className="card-img-overlay ">
+                              <div className="row">
+                                {" "}
+                                <div className="col-auto bg-light rounded-circle  ">
+                                  <span className="mt-2">
+                                    {product.rating}{" "}
+                                  </span>
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    fill="currentColor"
+                                    className="bi bi-star-fill text-warning mb-1"
+                                    viewBox="0 0 16 16"
+                                  >
+                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                  </svg>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </Link>
+                        <div className="container my-1 ">
+                          <span className="fw-normal">
+                            {product.title.substring(0, 30)}
+                          </span>
+                          <br />
+                          <span>
+                            <span className="fw-bold">Price:</span> ₹
+                            {product.price}
+                          </span>{" "}
+                          <br />
+                        </div>
+                      </div>
+                      <div
+                        className="d-grid gap-2"
+                        style={{ maxWidth: "300px" }}
+                      >
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => handleAddToBag(product)}
+                        >
+                         Add to Cart
+                        </button>{" "}
+                        <button
+                          isActive={!isWishlisted}
+                          onClick={() => handleToggleWishlist(product)}
+                          className="btn btn-outline-primary"
+                        >
+                          {isWishlisted
+                            ? "Remove from Wishlist"
+                            : "Add to Wishlist"}
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                : !loading &&
+                  !error && (
+                    <p className="text-center p-3 mb-2 bg-primary-subtle text-info-emphasis fw-normal ">
+                      No products available. Try adjusting your filters.
+                    </p>
+                  )}
             </div>
           </div>
         </div>
       </div>
       <br />
-      <Footer />
     </div>
   );
 };

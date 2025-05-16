@@ -1,22 +1,16 @@
-import Header from '../../components/Header'
-import Footer from '../../components/Footer'
 import Category from '../../components/Category'
 import ProductsSlide from '../../Slide/ProductsSlide'
 import ImageSlide from '../../Slide/ImageSlide'
 
 function Home() { 
   return (
-    <div >
-        <Header />
-        <div className='container'>
-        <ImageSlide/>
+    <div >       
+        <div className='container mb-5'>
         <Category/>
+        <ImageSlide/>              
         <ProductsSlide/> 
-        </div> 
-        <br/>     
-        <br/>     
-        <br/>       
-        <Footer/>
+        </div>        
+       
     </div>
   )
 }
