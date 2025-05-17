@@ -23,7 +23,7 @@ const ImageSlide = () => {
     <div className="container">
       <Slider {...settings}>
         {imagesForSlide.map((img, index) => (
-          <div className="py-2" key={index}>
+          <div className="pt-2" key={index}>
             <Link to="/products">
               <img style={myStyle} className="d-block w-100" src={img} />
             </Link>

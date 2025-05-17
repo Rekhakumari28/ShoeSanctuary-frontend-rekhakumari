@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAllProducts,
-  setPriceRange,
   setSortOrder,
 } from "../../reducer/productSlice";
 import { fetchAllCategories } from "../../reducer/categoriesSlice";
@@ -25,25 +24,47 @@ import toast from "react-hot-toast";
 import { categoryImage } from "../../components/Category";
 
 const Products = () => {
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const {productCategory} = useParams()
+  const [selectedCategories, setSelectedCategories] = useState(productCategory === "All"  ? ["Men", "Women", "Boys", "Girls"] : [productCategory]);
   const [selectedRating, setSelectedRating] = useState(null);
   const [resetFilters, setResetFilters] = useState(false);
-
   const [isWishlisted, setIsWishlisted] = useState(false);
-
-  const dispatch = useDispatch();
-
-  const { user } = useSelector((state) => state.user.user);
-  let userId = user ? user?._id : null;
+  const [userId, setUserId] = useState(null);
   
+  const dispatch = useDispatch();
+   const navigate = useNavigate();
+   const token = localStorage.getItem("jwtToken");
+  const { user } = useSelector((state) => state.user.user);
+    
   const wishlistItems = useSelector((state) => state.wishlist.items);
   const { products, loading, error } = useSelector(
     (state) => state.allProducts
   );
   const searchTerm = useSelector((state) => state.search.searchTerm);
   const sortOrder = useSelector((state) => state.allProducts.sortOrder);
-  const priceRange = useSelector((state) => state.allProducts.priceRange);
+  
+   useEffect(() => {
+     if (token) {
+       try {
+         const decoded = jwtDecode(token);
+         console.log("Decoded JWT:", decoded); // Check the actual field names
+         setUserId(decoded._id || decoded.id); // Try both _id and id
+       } catch (error) {
+        console.error("Error decoding JWT token:", error);
+        toast.error("Invalid session. Please log in again.");
+        navigate("/login"); // Redirect to login page if necessary
+       }
+     }
+   }, [navigate]);
 
+  useEffect(()=>{
+    if(productCategory === "All"){
+      setSelectedCategories([])
+    }else{
+      setSelectedCategories([productCategory])
+    }
+    },[productCategory])
+    
   //fetching wishlist
   useEffect(() => {
     if (userId) {
@@ -58,13 +79,15 @@ const Products = () => {
     dispatch(fetchAllCategories());
   }, [dispatch]);
 
+//category filter from home
+
   const filteredProducts = products.data?.products?.length> 0 && products.data?.products?.filter((product) => {
     
-    const searchProducts = product.title.toLowerCase().includes(searchTerm);
-
+    const searchProducts = product.title.toLowerCase().includes(searchTerm.toLowerCase() );
+    
     const selectedCategory =
     selectedCategories.length === 0 ||
-    selectedCategories.includes(product.category.category);
+    selectedCategories.includes( product.category.category ) 
 
     const selectedMatchRating =
       selectedRating === null || product.rating >= selectedRating;    
@@ -72,15 +95,15 @@ const Products = () => {
     return (
       searchProducts &&
       selectedCategory &&
-      selectedMatchRating 
-     
+      selectedMatchRating      
     );
   });
-  console.log(filteredProducts)
+
   const sortedProducts = filteredProducts?.length> 0 ? [...filteredProducts].sort((a, b) => {
     return sortOrder === "lowToHigh" ? a.price - b.price : b.price - a.price;
-  }) : products.data?.products;
+  }) : products.data?.products;  
 
+  
   //handle filter by category
   const handleCategoryChange = useCallback((categoryImage) => {
     setSelectedCategories(categoryImage);
@@ -171,10 +194,12 @@ const Products = () => {
     <div>
       <div className="container-fluid">
         <div className="row">
+          
           <div className="col-md-2 bg-body-tertiary mb-5">
             {/* categoryFilter */}
             <CategoryFilter
-             categories={categoryImage}
+             categories={categoryImage }
+             productCategory = {productCategory}
              onCategoryChange={handleCategoryChange}
             />
             <hr />
@@ -275,13 +300,11 @@ const Products = () => {
                          Add to Cart
                         </button>{" "}
                         <button
-                          isActive={!isWishlisted}
+                          
                           onClick={() => handleToggleWishlist(product)}
                           className="btn btn-outline-primary"
                         >
-                          {isWishlisted
-                            ? "Remove from Wishlist"
-                            : "Add to Wishlist"}
+                          Add to Wishlist
                         </button>
                       </div>
                     </div>

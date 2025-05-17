@@ -6,12 +6,26 @@ import toast from "react-hot-toast";
 
 function EditPofile() {
     const [name, setName] = useState("")
+    const [userId, setUserId] = useState(null);
 
 const dispatch = useDispatch();
 const navigate = useNavigate();
 const { user} = useSelector((state) => state.user.user);
-let userId = user ? user?._id : null;
-console.log(user)
+
+  useEffect(() => {
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        console.log("Decoded JWT:", decoded); // Check the actual field names
+        setUserId(decoded._id || decoded.id); // Try both _id and id
+      } catch (error) {
+        console.error("Error decoding JWT token:", error);
+        toast.error("Invalid session. Please log in again.");
+        navigate("/login"); // Redirect to login page if necessary
+      }
+    }
+  }, [navigate]);
+
 useEffect(()=>{
   
     if(userId){

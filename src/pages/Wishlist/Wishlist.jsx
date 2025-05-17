@@ -8,14 +8,29 @@ import { fetchWishlist, removeItemFromWishlist } from "../../reducer/wishlistSli
 import { fetchCart } from "../../reducer/shoppingBagSlice";
 
 const Wishlist = () => {
-
-  const dispatch = useDispatch();  const navigate = useNavigate();
+ const [userId, setUserId] = useState(null);
+ const navigate = useNavigate();
+ const token = localStorage.getItem("jwtToken");
+  const dispatch = useDispatch();
    const { user } = useSelector((state) => state.user.user);
-    let userId = user ? user?._id : null;    
+    // let userId = user ? user?._id : null;    
 
   const wishlistItems = useSelector((state) => state.wishlist.items || []);
-  const wishlistError = useSelector((state) => state.wishlist.error);
+  const {loading, error} = useSelector((state) => state.wishlist);
 
+  useEffect(() => {
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        console.log("Decoded JWT:", decoded); // Check the actual field names
+        setUserId(decoded._id || decoded.id); // Try both _id and id
+      } catch (error) {
+        console.error("Error decoding JWT token:", error);
+        toast.error("Invalid session. Please log in again.");
+        navigate("/login"); // Redirect to login page if necessary
+      }
+    }
+  }, [navigate]);
 
 useEffect(() => {
   if (userId) {
@@ -25,15 +40,7 @@ useEffect(() => {
   }
 }, [dispatch, userId]);
 
-useEffect(() => {
-  if (
-    wishlistError === "Unauthorized, no JWT token found" ||
-    wishlistError === "Unauthorized, JWT token wrong or expired"
-  ) {
-    toast.error("Session expired. Please log in again.");
-    navigate("/login"); // Redirect to login page
-  }
-}, [wishlistError, navigate]);
+
 
 if (!userId) {
   return (
@@ -74,11 +81,19 @@ const handleMoveToBag = async (product) => {
   }
 };
 
-  return (
-    
+  return (    
             <div className="container px-4  py-3 mb-5">
-     
-     {wishlistItems?.length === 0 ? (
+     {loading === true && (
+          <p className="text-center p-3 mb-2 bg-primary-subtle text-info-emphasis fw-normal ">
+            Loading...
+          </p>
+        )}
+        {error !== null && (
+          <p className="text-center p-3 mb-2 bg-warning-subtle text-info-emphasis fw-normal">
+            {error}
+          </p>
+        )}
+     {wishlistItems && wishlistItems?.length === 0 ? (
         <div className="text-center py-5 my-5">
           
           <h2 className="fw-bolder pb-3">Wishlist is Empty</h2>
@@ -96,6 +111,7 @@ const handleMoveToBag = async (product) => {
       ) : (
         <div className="row">
           <h2>My Wishlist ({wishlistItems.length}) Item</h2>
+         
           {wishlistItems && wishlistItems?.length > 0 && wishlistItems?.map((product) => (
           
             <div className="col-md-3  p-2" key={product.productId}>

@@ -13,12 +13,15 @@ import {
   removeItemFromWishlist,
 } from "../../reducer/wishlistSlice";
 import SimilarProductComponent from "../../components/SimilarProductComponent";
+import { addItemToBag, fetchCart } from "../../reducer/shoppingBagSlice";
 
 const ProductDetails = () => {
    const [productSize, setProductSize] = useState("");
+   const [userId, setUserId] = useState(null);
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+   const navigate = useNavigate();
+   const token = localStorage.getItem("jwtToken");
   const { productId } = useParams();
   const { product, loading, error } = useSelector((state) => state.productById);
   const wishlistItems = useSelector((state) => {
@@ -26,7 +29,20 @@ const ProductDetails = () => {
     return state.wishlist.items;
   });
   const { user } = useSelector((state) => state.user.user);
-  let userId = user ? user._id : null;
+
+  useEffect(() => {
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        console.log("Decoded JWT:", decoded); // Check the actual field names
+        setUserId(decoded._id || decoded.id); // Try both _id and id
+      } catch (error) {
+        console.error("Error decoding JWT token:", error);
+        toast.error("Invalid session. Please log in again.");
+        navigate("/login"); // Redirect to login page if necessary
+      }
+    }
+  }, [navigate]);
 
   useEffect(() => {
     dispatch(fetchProductById(productId));
@@ -73,10 +89,29 @@ const ProductDetails = () => {
     }
   };
 
-  // const handleSizeChange = async (product) => {
-  //   const productId = product._id;
-  //   dispatch(updateProducts({ productId, size: productSize, ...product }));
-  // };
+  const handleAddToBag = async (product) => {
+    try {
+           if (!userId) {
+             toast.error("Please log in to manage your wishlist.");
+             return;
+           }
+           console.log("inside", product, userId)
+       await dispatch(
+         addItemToBag({
+           userId,
+           productId: product._id,
+           title: product.title,
+           price: product.price,
+           images: product.images,
+           quantity:1
+         })
+       ).unwrap();
+       toast.success("Item added to bag");     
+       dispatch(fetchCart(userId));
+     } catch (err) {
+       toast.error(err.message || "Failed to add item to bag");
+     }
+   };
 
   return (
     <div className="container">
@@ -124,16 +159,7 @@ const ProductDetails = () => {
               </div>
             </div>
           </div>
-          <div className="d-grid gap-2">
-            <button
-              className="btn btn-primary"
-              style={{ maxWidth: "450px" }}
-              disabled={productSize === "" ? true : false}
-              onClick={() => handleAddToCart(product)}
-            >Add to Cart
-              {/* {!current ? "Add to Cart" : "Go To Cart"} */}
-            </button>{" "}
-          </div>
+         
         </div>
         <div className="col-md-6">
           <div
@@ -161,8 +187,21 @@ const ProductDetails = () => {
               <p>Category: {product?.category?.category}</p>
               <p>Description: {product?.description}</p>
             </div>
-          </div>
-          <div className="d-grid gap-2" style={{ maxWidth: "500px" }}>
+          </div>         
+        </div>
+        <div className="col-md-12">
+          <div className="row">
+          <div className="col-md-6"><div className="d-grid gap-2">
+            <button
+              className="btn btn-primary"
+              style={{ maxWidth: "450px" }}
+              disabled={productSize === "" ? true : false}
+              onClick={() => handleAddToBag(product)}
+            >Add to Cart
+              
+            </button>{" "}
+          </div></div>
+          <div className="col-md-6"><div className="d-grid gap-2" style={{ maxWidth: "500px" }}>
             <button
               // isActive={active}
               onClick={handleToggleWishlist}
@@ -170,6 +209,8 @@ const ProductDetails = () => {
             >Add To Wishlist
               {/* {!active ? "Add To Wishlist" : "Remove From Wishlist"} */}
             </button>
+          </div></div>
+        
           </div>
         </div>
       </div>

@@ -26,7 +26,7 @@ dispatch(fetchAllProducts())
 
   return (
     <div>
-      <div className="slider-container py-2">
+      <div className="slider-container pb-2 ">
         <div className="row">
         {loading === true && (
           <p className="text-center p-3 mb-2 bg-primary-subtle text-info-emphasis fw-normal ">
@@ -35,12 +35,12 @@ dispatch(fetchAllProducts())
         )}
         {error !== null && (
           <p className="text-center p-3 mb-2 bg-warning-subtle text-info-emphasis fw-normal">
-            {errorProducts}
+            {error}
           </p>
         )}
           <Slider {...settings}>      
             {Array.isArray(products.data?.products) && products.data?.products?.map((product) => (
-              <div className="col-md-3 mx-2" key={product._id}>
+              <div className="col-md-3 mx-2 mt-2" key={product._id}>
                 <Link to={`/productDetails/${product._id}`} className="link-offset-2 link-offset-2-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover text-black" >
                    <div className="card text-center border-0">
                     <img

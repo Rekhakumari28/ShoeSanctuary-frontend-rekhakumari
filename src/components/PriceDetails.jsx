@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast  from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,44 +7,9 @@ import { deleteAddress } from "../reducer/addressSlice";
 import { placeOrder } from "../reducer/orderSlice";
 import { clearBag } from "../reducer/shoppingBagSlice";
 
-// const handleRemoveOrderItems = async(orderItemId) =>{
-  
-//   try {
-//     const response = await fetch(
-//       `https://backend-shoesanctuary-major-project.vercel.app/api/orderItems/${orderItemId}`,
-//       { method: "DELETE" }
-//     );
-//     if(!response.ok){
-//       throw "Failed to delete product from cart."
-//     }
-//     const data = response.json()
-//     console.log("Product deleted:", data)
-//     toast.success("Product Removed from Cart.")
-//   } catch (error) {
-//     toast.error("Error: ", error)
-//   }
-// }
-
-// const handleRemoveAddress = async (addressId) =>{
-//   try {
-//     const response = await fetch(`https://backend-shoesanctuary-major-project.vercel.app/api/addresses/${addressId}`,
-//      { method: "DELETE"},
-//   );
-  
-//     if(!response.ok){
-//       throw "Failed to delete Address."
-//     }
-//     const data = await response.json()
-//     if(data){
-//       setSuccessMessage("Address deleted Successfully.")
-//       console.log("Address deleted Successfully.", data)
-//     }
-//   } catch (error) {
-//     console.log("Error: ", error)
-//   }
-// }
 
 const PriceDetails = () => {
+  const [userId, setUserId] = useState(null);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState("bag"); 
   const [selectedAddress, setSelectedAddress] = useState();
@@ -53,7 +18,23 @@ const PriceDetails = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch();
    const { user } = useSelector((state) => state.user.user);
-    let userId = user ? user?._id : null;
+   
+   const token = localStorage.getItem("jwtToken");
+
+    useEffect(() => {
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
+          console.log("Decoded JWT:", decoded); // Check the actual field names
+          setUserId(decoded._id || decoded.id); // Try both _id and id
+        } catch (error) {
+          console.error("Error decoding JWT token:", error);
+        toast.error("Invalid session. Please log in again.");
+        navigate("/login"); // Redirect to login page if necessary
+        }
+      }
+    }, [navigate]);
+
 
   const itemQuantity = Array.isArray(items.products)
   ? items.products?.reduce(

@@ -1,14 +1,29 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { fetchOrderDetails } from "../../reducer/orderSlice";
 import { ProductCardComponent } from "../../components/ProductCardComponent";
 
 const Checkout = () => {
+  const [userId, setUserId] = useState(null);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user.user);
-  let userId = user ? user?._id : null;
+  const navigate = useNavigate()
   const { orderDetails } = useSelector((state) => state.order);
+
+  useEffect(() => {
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        console.log("Decoded JWT:", decoded); // Check the actual field names
+        setUserId(decoded._id || decoded.id); // Try both _id and id
+      } catch (error) {
+        console.error("Error decoding JWT token:", error);
+        toast.error("Invalid session. Please log in again.");
+        navigate("/login"); // Redirect to login page if necessary
+      }
+    }
+  }, [navigate]);
 
   useEffect(() => {
     dispatch(fetchOrderDetails(userId));

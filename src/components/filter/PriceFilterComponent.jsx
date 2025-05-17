@@ -5,8 +5,7 @@ import { setSortOrder } from "../../reducer/productSlice";
 const PriceFilterComponent = () => {
   const dispatch = useDispatch();
   const sortOrder = useSelector((state)=>{
-    console.log(state.allProducts.sortOrder)
-    return state.allProducts.sortOrder
+       return state.allProducts.sortOrder
   });
 
   const handleSortChange = (e) => {

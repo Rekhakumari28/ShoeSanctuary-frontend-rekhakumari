@@ -10,16 +10,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch()
 const navigate = useNavigate()
-  const handleEmailInput = (event) => {
-    let emailId = event.target.value;
-    const atIndex = emailId.indexOf("@");
-    const dotIndex = emailId.indexOf(".");
-    if (atIndex > 0 && atIndex < dotIndex) {
-      setEmail(emailId);
-    } else {
-      setEmail(`Invalid Email`);
-    }
-};
+
 
   const handleUserLoginForm = (event) => {
     event.preventDefault();
@@ -27,7 +18,7 @@ const navigate = useNavigate()
   dispatch(loginUser(credentials)).unwrap().then((user)=>{
     console.log("After login user data: ", user.user._id)
     toast.success("Login Successfully!")
-    navigate(`/userProfile/${user.user._id}`)
+    navigate(`/home`)
   }).catch((error)=>{
     console.log("Error: ",error)
     toast.error("Login failed.")
@@ -58,7 +49,7 @@ const navigate = useNavigate()
               className="form-control"
               placeholder="name@example.com"
            value={email}
-              onChange={handleEmailInput}
+              onChange={(event)=>setEmail(event.target.value)}
             />
             </div>
 

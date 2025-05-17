@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const CategoryFilter = ({ categories, onCategoryChange, reset }) => {
+const CategoryFilter = ({ categories, onCategoryChange, reset , productCategory}) => {
   const [selectedCategories, setSelectedCategories] = useState([]);
 
   useEffect(() => {
@@ -29,22 +29,75 @@ const CategoryFilter = ({ categories, onCategoryChange, reset }) => {
     <label className="my-2">
       <h3>Category</h3>
     </label>
-    <br />
-    {categories.map((category)=> 
-      <label className="my-2" key={category.id}>
+
+     {categories.map((category)=> <div key={category.id}>
+      <label className="my-1" >
       <input
         onChange={handleCategoryCheckbox}
         type="checkbox"
         name="category"
         value={category.category}
-        checked={selectedCategories.includes(category.category) }
-      />{" "}
+        checked={selectedCategories.includes( category.category  ) }
+      />{" "} 
       {category.category}{" "}
-    </label>
-    )}
+    </label> 
+    <br/>
+   
+    </div>
+    )} 
   
-  
-    <br />
+  {/* <div className="mx-3">
+              <label className="my-2">
+                <h3>Category</h3>
+              </label>
+              <br />
+              <label className="my-2">
+                <input
+                  onChange={handleCategoryCheckbox}
+                  type="checkbox"
+                  name="category"
+                  value="Men"
+                  checked={selectedCategories.includes("Men") }
+                />{" "}
+                Men{" "}
+              </label>
+              <br />
+              <label className="my-2">
+                <input
+                onChange={handleCategoryCheckbox}
+                type="checkbox"
+                name="category"
+                value="Women"
+                checked={ selectedCategories.includes("Women")}
+                />{" "}
+                Women{" "}
+              </label>
+              <br />
+              <label className="my-2">
+                <input
+                   onChange={handleCategoryCheckbox}
+                   type="checkbox"
+                   name="category"
+                   value="Girls"
+                   checked={selectedCategories.includes("Girls")}
+                />{" "}
+                Girls{" "}
+              </label>
+              <br />
+              <label className="my-2">
+                <input
+                   onChange={handleCategoryCheckbox}
+                   type="checkbox"
+                   name="category"
+                   value="Boys"
+                   checked={ selectedCategories.includes("Boys")}
+                />{" "}
+                Boys{" "}
+              </label>
+              <br />
+           
+            </div>
+     */}
  
   </div>
   </>

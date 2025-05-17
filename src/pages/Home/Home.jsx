@@ -5,7 +5,7 @@ import ImageSlide from '../../Slide/ImageSlide'
 function Home() { 
   return (
     <div >       
-        <div className='container mb-5'>
+        <div className='container mb-5 '>
         <Category/>
         <ImageSlide/>              
         <ProductsSlide/> 

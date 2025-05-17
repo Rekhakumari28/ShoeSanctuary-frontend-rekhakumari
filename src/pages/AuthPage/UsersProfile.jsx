@@ -9,18 +9,33 @@ import { fetchOrderHistory } from "../../reducer/orderSlice";
 import { ProductCardComponent } from "../../components/ProductCardComponent";
 
 const UsersProfile = () => {
+  const [userIdFromToken, setUserId] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const token = localStorage.getItem("jwtToken");
      const {user, loading, error} = useSelector((state)=>state.user)
-     let userId = user ? user.user._id : null;
+   let userId = user ? user.user?._id : userIdFromToken
 const { orders } = useSelector((state) => {
     return state.order;
   });
+  useEffect(() => {
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        console.log("Decoded JWT:", decoded); // Check the actual field names
+        setUserId(decoded._id || decoded.id); // Try both _id and id
+      } catch (error) {
+        console.error("Error decoding JWT token:", error);
+                toast.error("Invalid session. Please log in again.");
+               navigate("/login"); // Redirect to login page if necessary
+      }
+    }
+  }, [navigate]);
  
   useEffect(() => {   
       dispatch(fetchUserById({ _id: userId })); 
         dispatch(fetchOrderHistory(userId)); 
-  }, [dispatch, userId]);
+  }, [dispatch, userId ]);
 
   const handleLogout = () => {
     dispatch(logout());
