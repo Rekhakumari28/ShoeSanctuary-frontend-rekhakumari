@@ -3,6 +3,7 @@ import {  useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserById, updateUser } from "../../reducer/userSlice";
 import toast from "react-hot-toast";
+import { jwtDecode } from "jwt-decode";
 
 function EditPofile() {
     const [name, setName] = useState("")

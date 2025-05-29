@@ -6,7 +6,7 @@ import AddAddressComponent from "./AddAddressComponent";
 import { deleteAddress } from "../reducer/addressSlice";
 import { placeOrder } from "../reducer/orderSlice";
 import { clearBag } from "../reducer/shoppingBagSlice";
-
+import { jwtDecode } from "jwt-decode";
 
 const PriceDetails = () => {
   const [userId, setUserId] = useState(null);

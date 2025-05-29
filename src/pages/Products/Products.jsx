@@ -17,6 +17,7 @@ import {
   fetchCart,
  
 } from "../../reducer/shoppingBagSlice";
+import { jwtDecode } from "jwt-decode";
 import CategoryFilter from "../../components/filter/CategooryFilter";
 import RatingFilterComponent from "../../components/filter/RatingFilterComponent";
 import PriceFilterComponent from "../../components/filter/PriceFilterComponent";

@@ -4,29 +4,30 @@ import { useDispatch, useSelector } from "react-redux"
 import toast from "react-hot-toast";
 import { deleteAddress, fetchAddressesByUser } from "../reducer/addressSlice";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 function AddressList() {  
-  const [userId, setUserId] = useState(null); 
+  // const [userId, setUserId] = useState(null); 
   const dispatch = useDispatch();
   const { address, loading, error } = useSelector((state) => state.address);
     const {user} = useSelector((state)=>state.user)
-    // let userId = user ? user.user._id : null;
+    let userId = user ? user.user._id : null;
  console.log(address) 
 const navigate = useNavigate();
 const token = localStorage.getItem("jwtToken"); 
 
- useEffect(() => {
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);
-        console.log("Decoded JWT:", decoded); // Check the actual field names
-        setUserId(decoded._id || decoded.id); // Try both _id and id
-      } catch (error) {
-        console.error("Error decoding JWT token:", error);
-        toast.error("Invalid session. Please log in again.");
-        navigate("/login"); // Redirect to login page if necessary
-      }
-    }
-  }, [navigate]);
+//  useEffect(() => {
+//     if (token) {
+//       try {
+//         const decoded = jwtDecode(token);
+//         console.log("Decoded JWT:", decoded); // Check the actual field names
+//         setUserId(decoded._id || decoded.id); // Try both _id and id
+//       } catch (error) {
+//         console.error("Error decoding JWT token:", error);
+//         toast.error("Invalid session. Please log in again.");
+//         navigate("/login"); // Redirect to login page if necessary
+//       }
+//     }
+//   }, [navigate]);
 
 
    useEffect(() => {
