@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { fetchOrderDetails } from "../../reducer/orderSlice";
 import { ProductCardComponent } from "../../components/ProductCardComponent";
-
+import { jwtDecode } from "jwt-decode";
 const Checkout = () => {
   const [userId, setUserId] = useState(null);
   const dispatch = useDispatch();
