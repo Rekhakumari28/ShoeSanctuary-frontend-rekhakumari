@@ -18,6 +18,8 @@ const UsersProfile = () => {
 const { orders } = useSelector((state) => {
     return state.order;
   });
+
+  console.log(orders , "ask")
   useEffect(() => {
     if (token) {
       try {
@@ -104,7 +106,7 @@ const { orders } = useSelector((state) => {
       <section>
         <Address />
       </section>
-      <section className=" mt-3 row border bg-light rounded">
+      {/* <section className=" mt-3 row border bg-light rounded">
       
         {orders.map(order=> <div className="col-md-12 py-3" key={order._id}>
   <div className="col-md-6 py-3" >
@@ -118,7 +120,7 @@ const { orders } = useSelector((state) => {
                   </div>
         </div> )}
        
-      </section>
+      </section> */}
     </div>
   );
 };

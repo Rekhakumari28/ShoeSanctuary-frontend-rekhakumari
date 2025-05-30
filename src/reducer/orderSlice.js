@@ -77,7 +77,7 @@ export const placeOrder = createAsyncThunk(
           },
         }
       );
-
+console.log(response)
       return response.data;
     } catch (error) {
       console.error("Error placing order:", error.response?.data);

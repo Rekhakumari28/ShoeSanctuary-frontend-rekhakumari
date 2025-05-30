@@ -107,11 +107,14 @@ console.log(selectedAddress)
       totalAmount: calculateTotalAmount(),
     shippingAddress:selectedAddress
     })).unwrap();
-    dispatch(clearBag());
+   ;
     toast.success("Order placed successfully!");
     setOrderPlaced(true);
     setCheckoutStep("success");
     navigate("/checkout")
+    setTimeout(()=>{
+ dispatch(clearBag())
+    },5000)
   } catch (err) {
     console.error("Failed to place order:", err);
     toast.error(err.message || "Failed to place order.");
