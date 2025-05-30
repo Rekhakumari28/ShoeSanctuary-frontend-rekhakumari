@@ -12,7 +12,7 @@ function EditPofile() {
 const dispatch = useDispatch();
 const navigate = useNavigate();
 const { user} = useSelector((state) => state.user.user);
-
+ const token = localStorage.getItem("jwtToken");
   useEffect(() => {
     if (token) {
       try {
@@ -48,7 +48,11 @@ const handleSubmit = ( event )=>{
     .unwrap()
     .then(() => {
       toast.success("Profile updated successfully!");
-      navigate(`/userProfile/${userId}`);
+    navigate(`/userProfile/${userId}`);
+      setTimeout(()=>{
+window.location.reload()
+  
+        }, 500)
     })
     .catch((error) => {
      toast.error("Failed to update profile.")
