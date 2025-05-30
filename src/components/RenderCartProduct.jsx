@@ -19,7 +19,7 @@ const RenderCartProduct = () => {
   useEffect(() => {
     dispatch(fetchCart(userId));
   }, [userId]);
-  const handleRemoveFromCart = async (product) => {
+  const handleRemoveFromCart = async (productId) => {
     if (!userId) {
       console.error("User ID is undefined.");
       toast.error("Please log in to manage your bag.");
@@ -27,7 +27,7 @@ const RenderCartProduct = () => {
     }
     try {
       await dispatch(
-        removeItemFromBag({ userId, productId: product.productId })
+        removeItemFromBag({ userId, productId })
       ).unwrap();
       toast.success("Item removed from bag");
       dispatch(fetchCart(userId));
@@ -103,11 +103,11 @@ const RenderCartProduct = () => {
             Loading...
           </p>
         )}
-        {error !== null && (
+        {/* {error !== null && (
           <p className="text-center p-3 mb-2 bg-warning-subtle text-info-emphasis fw-normal">
             {error}
           </p>
-        )}
+        )} */}
       {items.products && items.products?.length > 0 ? (
         items.products?.map((product) => (
           <div

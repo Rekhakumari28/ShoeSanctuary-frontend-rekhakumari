@@ -37,12 +37,12 @@ const { orders } = useSelector((state) => {
         dispatch(fetchOrderHistory(userId)); 
   }, [dispatch, userId ]);
 
+  
   const handleLogout = () => {
     dispatch(logout());
     toast.success("Logout Successfullly!");
     navigate("/");
   };
- 
  console.log(user)
 
 

@@ -2,21 +2,14 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchAllProducts,
-  setSortOrder,
-} from "../../reducer/productSlice";
+import { fetchAllProducts, setSortOrder } from "../../reducer/productSlice";
 import { fetchAllCategories } from "../../reducer/categoriesSlice";
 import {
   addItemToWishlist,
   fetchWishlist,
   removeItemFromWishlist,
 } from "../../reducer/wishlistSlice";
-import {
-  addItemToBag,
-  fetchCart,
- 
-} from "../../reducer/shoppingBagSlice";
+import { addItemToBag, fetchCart } from "../../reducer/shoppingBagSlice";
 import { jwtDecode } from "jwt-decode";
 import CategoryFilter from "../../components/filter/CategooryFilter";
 import RatingFilterComponent from "../../components/filter/RatingFilterComponent";
@@ -25,52 +18,54 @@ import toast from "react-hot-toast";
 import { categoryImage } from "../../components/Category";
 
 const Products = () => {
-  const {productCategory} = useParams()
-  const [selectedCategories, setSelectedCategories] = useState(productCategory === "All"  ? ["Men", "Women", "Boys", "Girls"] : [productCategory]);
+  const { productCategory } = useParams();
+  const [selectedCategories, setSelectedCategories] = useState(
+    productCategory === "All"
+      ? ["Men", "Women", "Boys", "Girls"]
+      : [productCategory]
+  );
   const [selectedRating, setSelectedRating] = useState(null);
   const [resetFilters, setResetFilters] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [userId, setUserId] = useState(null);
-  
+
   const dispatch = useDispatch();
-   const navigate = useNavigate();
-   const token = localStorage.getItem("jwtToken");
-  const { user } = useSelector((state) => state.user.user);
-    
+  const navigate = useNavigate();
+  const token = localStorage.getItem("jwtToken");
   const wishlistItems = useSelector((state) => state.wishlist.items);
   const { products, loading, error } = useSelector(
     (state) => state.allProducts
   );
   const searchTerm = useSelector((state) => state.search.searchTerm);
   const sortOrder = useSelector((state) => state.allProducts.sortOrder);
-  
-   useEffect(() => {
-     if (token) {
-       try {
-         const decoded = jwtDecode(token);
-         console.log("Decoded JWT:", decoded); // Check the actual field names
-         setUserId(decoded._id || decoded.id); // Try both _id and id
-       } catch (error) {
+
+  useEffect(() => {
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        console.log("Decoded JWT:", decoded); // Check the actual field names
+        setUserId(decoded._id || decoded.id); // Try both _id and id
+      } catch (error) {
         console.error("Error decoding JWT token:", error);
         toast.error("Invalid session. Please log in again.");
         navigate("/login"); // Redirect to login page if necessary
-       }
-     }
-   }, [navigate]);
-
-  useEffect(()=>{
-    if(productCategory === "All"){
-      setSelectedCategories([])
-    }else{
-      setSelectedCategories([productCategory])
+      }
     }
-    },[productCategory])
-    
+  }, [navigate]);
+
+  useEffect(() => {
+    if (productCategory === "All") {
+      setSelectedCategories([]);
+    } else {
+      setSelectedCategories([productCategory]);
+    }
+  }, [productCategory]);
+
   //fetching wishlist
   useEffect(() => {
     if (userId) {
       dispatch(fetchWishlist(userId));
-      dispatch(fetchCart(userId))
+      dispatch(fetchCart(userId));
     }
   }, [dispatch, userId]);
 
@@ -80,31 +75,53 @@ const Products = () => {
     dispatch(fetchAllCategories());
   }, [dispatch]);
 
-//category filter from home
+  //category filter from home
 
-  const filteredProducts = products.data?.products?.length> 0 && products.data?.products?.filter((product) => {
-    
-    const searchProducts = product.title.toLowerCase().includes(searchTerm.toLowerCase() );
-    
-    const selectedCategory =
-    selectedCategories.length === 0 ||
-    selectedCategories.includes( product.category.category ) 
+  const filteredProducts =
+    products.data?.products?.length > 0 &&
+    products.data?.products?.filter((product) => {
+      const searchProducts = product.title
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const categoryMatch = product.category.category
+        .toLowerCase()
+        .includes(searchTerm);
+      const selectedCategory =
+        selectedCategories.length === 0 ||
+        selectedCategories.includes(product.category.category);
 
-    const selectedMatchRating =
-      selectedRating === null || product.rating >= selectedRating;    
+      const selectedMatchRating =
+        selectedRating === null || product.rating >= selectedRating;
 
-    return (
-      searchProducts &&
-      selectedCategory &&
-      selectedMatchRating      
-    );
-  });
+      return searchProducts && selectedCategory && selectedMatchRating && categoryMatch
+    });
 
-  const sortedProducts = filteredProducts?.length> 0 ? [...filteredProducts].sort((a, b) => {
-    return sortOrder === "lowToHigh" ? a.price - b.price : b.price - a.price;
-  }) : products.data?.products;  
+  const sortedProducts =
+    filteredProducts?.length > 0
+      ? [...filteredProducts].sort((a, b) => {
+          return sortOrder === "lowToHigh"
+            ? a.price - b.price
+            : b.price - a.price;
+        })
+      : products.data?.products;
 
-  
+
+
+
+const handleSearchProductFromNavbar =
+    searchTerm === ""
+      ? sortedProducts
+      : sortedProducts?.filter((product) => {
+        const categoryMatch = product.category.category
+          .toLowerCase()
+          .includes(searchTerm);
+        const productMatch = product.title
+          .toLowerCase()
+          .includes(searchTerm)
+        return categoryMatch || productMatch;
+      });
+
+
   //handle filter by category
   const handleCategoryChange = useCallback((categoryImage) => {
     setSelectedCategories(categoryImage);
@@ -114,11 +131,12 @@ const Products = () => {
     setSelectedRating(rating);
   }, []);
 
-  const handleClearFilter = () => {    
-   setSelectedCategories([]);
+  const handleClearFilter = () => {
+    setSelectedCategories([]);
     setSelectedRating(null);
     setResetFilters(true);
-    dispatch(setSortOrder(null));  
+    dispatch(setSortOrder(null));
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -168,12 +186,12 @@ const Products = () => {
 
   //add to cart
   const handleAddToBag = async (product) => {
-   try {
-          if (!userId) {
-            toast.error("Please log in to manage your wishlist.");
-            return;
-          }
-          console.log("inside", product, userId)
+    try {
+      if (!userId) {
+        toast.error("Please log in to manage your wishlist.");
+        return;
+      }
+      console.log("inside", product, userId);
       await dispatch(
         addItemToBag({
           userId,
@@ -181,10 +199,10 @@ const Products = () => {
           title: product.title,
           price: product.price,
           images: product.images,
-          quantity:1
+          quantity: 1,
         })
       ).unwrap();
-      toast.success("Item added to bag");     
+      toast.success("Item added to bag");
       dispatch(fetchCart(userId));
     } catch (err) {
       toast.error(err.message || "Failed to add item to bag");
@@ -195,25 +213,26 @@ const Products = () => {
     <div>
       <div className="container-fluid">
         <div className="row">
-          
           <div className="col-md-2 bg-body-tertiary mb-5">
             {/* categoryFilter */}
             <CategoryFilter
-             categories={categoryImage }
-             productCategory = {productCategory}
-             onCategoryChange={handleCategoryChange}
+              categories={categoryImage}
+              productCategory={productCategory}
+              onCategoryChange={handleCategoryChange}
             />
             <hr />
 
             {/* ratingFilter */}
-            <RatingFilterComponent  onRatingChange={handleRatingChange}
-            reset={resetFilters}/>
-             
+            <RatingFilterComponent
+              onRatingChange={handleRatingChange}
+              reset={resetFilters}
+            />
+
             <hr />
 
             {/* sortPriceFilter */}
             <PriceFilterComponent />
-          
+
             {/* clearFilter */}
             <div className="mt-3 mx-3">
               <h4>
@@ -240,8 +259,8 @@ const Products = () => {
               </p>
             )}
             <div className="row ms-2 mb-5">
-              {Array.isArray(sortedProducts) && sortedProducts.length > 0
-                ? sortedProducts?.map((product) => (
+              {Array.isArray(handleSearchProductFromNavbar) && handleSearchProductFromNavbar.length > 0
+                ? handleSearchProductFromNavbar?.map((product) => (
                     <div className="col-md-3 p-2" key={product._id}>
                       <div
                         style={{ height: "260px", maxWidth: "300px" }}
@@ -298,10 +317,9 @@ const Products = () => {
                           className="btn btn-primary"
                           onClick={() => handleAddToBag(product)}
                         >
-                         Add to Cart
+                          Add to Cart
                         </button>{" "}
                         <button
-                          
                           onClick={() => handleToggleWishlist(product)}
                           className="btn btn-outline-primary"
                         >

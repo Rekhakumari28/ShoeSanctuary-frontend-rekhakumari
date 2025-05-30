@@ -5,14 +5,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { fetchWishlist, removeItemFromWishlist } from "../../reducer/wishlistSlice";
-import { fetchCart } from "../../reducer/shoppingBagSlice";
+import { addItemToBag, fetchCart } from "../../reducer/shoppingBagSlice";
 
 const Wishlist = () => {
  const [userId, setUserId] = useState(null);
  const navigate = useNavigate();
  const token = localStorage.getItem("jwtToken");
   const dispatch = useDispatch();
-   const { user } = useSelector((state) => state.user.user);
+  //  const { user } = useSelector((state) => state.user.user);
     // let userId = user ? user?._id : null;    
 
   const wishlistItems = useSelector((state) => state.wishlist.items || []);
@@ -76,6 +76,9 @@ const handleMoveToBag = async (product) => {
      handleRemoveFromWishlist(product);
     toast.success("Item moved to bag");
     dispatch(fetchCart(userId));
+    setTimeout(()=>{
+      window.location.reload()
+    },2000)
   } catch (err) {
     toast.error(err.message || "Failed to move item");
   }
@@ -88,11 +91,11 @@ const handleMoveToBag = async (product) => {
             Loading...
           </p>
         )}
-        {error !== null && (
+        {/* {error !== null && (
           <p className="text-center p-3 mb-2 bg-warning-subtle text-info-emphasis fw-normal">
             {error}
           </p>
-        )}
+        )} */}
      {wishlistItems && wishlistItems?.length === 0 ? (
         <div className="text-center py-5 my-5">
           

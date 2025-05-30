@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { fetchOrderDetails } from "../../reducer/orderSlice";
@@ -7,9 +7,10 @@ import { jwtDecode } from "jwt-decode";
 const Checkout = () => {
   const [userId, setUserId] = useState(null);
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.user.user);
+  const { user } = useSelector((state) => state.user.user); 
   const navigate = useNavigate()
   const { orderDetails } = useSelector((state) => state.order);
+  const token = localStorage.getItem("jwtToken");
 
   useEffect(() => {
     if (token) {
@@ -28,7 +29,7 @@ const Checkout = () => {
   useEffect(() => {
     dispatch(fetchOrderDetails(userId));
   }, [userId]);
-
+console.log(orderDetails)
   return (
     <div>
       <div className="container mb-5">
@@ -72,7 +73,7 @@ const Checkout = () => {
             </div>
 
             <span className="ms-3 p-2 mt-2 mb-3 ">
-              <strong>Shipping Address:</strong> {orderDetails?.shippingAddress}
+              {/* <strong>Shipping Address:</strong> {orderDetails?.shippingAddress} */}
               {/* {orders?.shippingAddress?.address} {cartSummery?.shippingAddress?.city} {cartSummery?.shippingAddress?.postalCode} {cartSummery?.shippingAddress?.country} */}
             </span>
           </div>

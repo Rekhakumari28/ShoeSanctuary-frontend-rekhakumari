@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchWishlist } from "../reducer/wishlistSlice";
 import { fetchCart } from "../reducer/shoppingBagSlice";
 import { setSearchTerm } from "../reducer/searchSlice";
+import { logout } from "../reducer/userSlice";
 
 const Header = () => {
   const [userId, setUserId] = useState(null);
@@ -36,9 +37,11 @@ const Header = () => {
 
   const handleSearch = (e) => {
     const searchValue = e.target.value.toLowerCase();
+    console.log(searchValue)
     dispatch(setSearchTerm(searchValue));
   };
 
+ 
   return (
     <header className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container">

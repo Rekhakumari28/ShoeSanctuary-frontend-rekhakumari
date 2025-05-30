@@ -29,7 +29,7 @@ const ProductDetails = () => {
    
     return state.wishlist.items;
   });
-  const { user } = useSelector((state) => state.user.user);
+  // const { user } = useSelector((state) => state.user.user);
 
   useEffect(() => {
     if (token) {
@@ -172,7 +172,7 @@ const ProductDetails = () => {
               <p className="my-1">Rating: {product?.rating}</p>
               <p className="my-1">Price: ₹{product?.price}</p>
               <p className="my-1">Discount: {product?.discount}%</p>
-              <label>Select Shoes Size:</label>{" "}
+              {/* <label>Select Shoes Size:</label>{" "}
               <select
                 name="size"
                 className="btn text-bg-light p-2"
@@ -184,7 +184,7 @@ const ProductDetails = () => {
                 <option value="M">M</option>
                 <option value="L">L</option>
                 <option value="XL">XL</option>
-              </select>
+              </select> */}
               <p>Category: {product?.category?.category}</p>
               <p>Description: {product?.description}</p>
             </div>
@@ -196,7 +196,7 @@ const ProductDetails = () => {
             <button
               className="btn btn-primary"
               style={{ maxWidth: "450px" }}
-              disabled={productSize === "" ? true : false}
+              
               onClick={() => handleAddToBag(product)}
             >Add to Cart
               

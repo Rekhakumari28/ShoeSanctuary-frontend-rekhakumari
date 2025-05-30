@@ -12,7 +12,7 @@ const PriceDetails = () => {
   const [userId, setUserId] = useState(null);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState("bag"); 
-  const [selectedAddress, setSelectedAddress] = useState();
+  const [selectedAddress, setSelectedAddress] = useState("");
   const { address} = useSelector((state) => state.address)
   const { items } = useSelector((state) => state.shoppingBag);
   const navigate = useNavigate()
@@ -88,24 +88,7 @@ const PriceDetails = () => {
       }
     };
 
-// const handleRemoveCart = async (cartId) =>{
-//   try {
-//     const response = await fetch(
-//       `https://backend-shoesanctuary-major-project.vercel.app/api/carts/${cartId}`,
-//       { method: "DELETE" }
-//     );
-//     if (!response.ok) {
-//       throw "Failed to remove cart.";
-//     }
-//     const data = await response.json();
-//     if (data) {
-//       toast.success("Item removed Successfully.");
-//       window.location.reload()
-//     }
-//   } catch (error) {
-//     toast.error("An error occured while removing item from cart.");
-//   }
-// }
+
 const handlePlaceOrder = async () => {
   if (!selectedAddress) {
     toast.error("Please select a delivery address.");
@@ -116,7 +99,7 @@ const handlePlaceOrder = async () => {
     toast.error("User ID not available. Please log in again.");
     return;
   }
-
+console.log(selectedAddress)
   try {
     await dispatch(placeOrder({
        userId,
@@ -180,7 +163,7 @@ const handlePlaceOrder = async () => {
             {address && address.length > 0 && address.map(address=>(
                 <div className='card' key={address._id}>
                   <div className='card-body'>
-                      <input type="radio" name="address" value={selectedAddress} onChange={()=>setSelectedAddress(address._id)}/>{" "}
+                      <input type="radio" name="address" value={address._id} onChange={(e)=>setSelectedAddress(e.target.value)}/>{" "}
                       {address.name}, {address.city}, {address.postalCode},  {address.country} <br/>
                     <button className='btn btn-danger float-end btn-sm' onClick={()=>handleRemoveAddress(address._id)}>Remove</button>
                   </div>
