@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import Slider from "react-slick";
 import { fetchAllProducts } from "../reducer/productSlice";
 
 
@@ -11,22 +10,16 @@ const {products, loading, error} = useSelector((state)=> {
   return state.allProducts
 })
 
+
+const featuredProducts = products.data?.products?.filter(product=> product.title === "Terfill Girls Lace Sneakers" || product.title ==="ELLE Brown Solid Slip-On Party Wear" )
 useEffect(()=>{
 dispatch(fetchAllProducts())
 },[])
-
-  const settings = {
-    infinite: true,
-    slidesToShow: 6,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 3000,
-    pauseOnHover: true,
-  };
-
+console.log(featuredProducts)
+  
   return (
     <div>
-      <div className="slider-container pb-2 ">
+      <div className="slider-container py-2 pb-3 ">
         <div className="row">
         {loading === true && (
           <p className="text-center p-3 mb-2 bg-primary-subtle text-info-emphasis fw-normal ">
@@ -38,23 +31,35 @@ dispatch(fetchAllProducts())
             {error}
           </p>
         )}
-          <Slider {...settings}>      
-            {Array.isArray(products.data?.products) && products.data?.products?.map((product) => (
-              <div className="col-md-3 mx-2 mt-2" key={product._id}>
-                <Link to={`/productDetails/${product._id}`} className="link-offset-2 link-offset-2-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover text-black" >
+
+        <h3 className="py-2">Featured Products</h3>
+       
+            {Array.isArray(featuredProducts) && featuredProducts?.map((product) => (
+              <div className="col-md-6 " key={product._id}>
+                <div className="row">
+                  <div className="col-md-6"> <Link to={`/productDetails/${product._id}`} className="link-offset-2 link-offset-2-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover text-black" >
                    <div className="card text-center border-0">
                     <img
-                      style={{ height: "150px", width: "150px" }}
+                      style={{ height: "300px", maxWidth: "300px" }}
                       className="img-fluid rounded "
                       src={product.images}
                       alt={product.title}
                     />
                   </div>
-                  <span>{product.title.substring(0, 20)}</span>
-                </Link>
+                 
+                </Link></div>
+                  <div className="col-md-6">
+                     <h4>{product.title}</h4>
+                     <p>PRice: {product.price}</p>
+                     <p>Discount: {product.discount}%</p>
+                     <p>Rating: {product.rating}</p>
+                     <p>Description: {product.description.substring(0, 150)}</p>
+                  </div>
+                </div>
+               
               </div>
-            ))}
-          </Slider>
+             ))} 
+         
         </div>
       </div>
     </div>
