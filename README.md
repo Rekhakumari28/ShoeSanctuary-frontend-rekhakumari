@@ -33,7 +33,7 @@ npm run dev
 
 - React JS
 - Bootstrap
-- Redux (or Context API)
+- Redux 
 - Node.js
 - Express
 - MongoDB
