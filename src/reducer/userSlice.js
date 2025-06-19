@@ -6,11 +6,11 @@ export const shoeSantuary_URL = "https://shoe-sanctuary-rekhakumari.vercel.app"
 // Async thunk to register user
 export const registerUser = createAsyncThunk(
   "user/registerUser",
-  async (newUser) => {
+  async ({ name, email, password }) => {
     try {
       const response = await axios.post(
        `${shoeSantuary_URL}/api/user/signup`,
-        newUser
+        { name, email, password }
       );
       return response.data;
     } catch (error) {
